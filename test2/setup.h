@@ -4,5 +4,5 @@
 
 #ifndef TEST2_SETUP_H
 #define TEST2_SETUP_H
-int setup();
+void setup();
 #endif //TEST2_SETUP_H
