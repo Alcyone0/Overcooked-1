@@ -3,6 +3,7 @@
 #include  "setup.h"
 #include "musique.h"
 #include "initiaallegro.h"
+#include "nv1.h"
 
 
 MenuState menuState = MAIN_MENU;
@@ -28,7 +29,7 @@ int main() {
 
        if (menuState == GAME) {
            // Appel à une fonction pour démarrer le jeu
-           setup(); // Remplacez setupGame() par le nom de la fonction qui initialise votre jeu
+           nv1(); // Remplacez setupGame() par le nom de la fonction qui initialise votre jeu
            // Sortir de la boucle après le jeu
            break;
        }
