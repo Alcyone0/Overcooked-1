@@ -5,10 +5,13 @@
 #include "deplace.h"
 #include <allegro.h>
 #include <stdbool.h>
+#include "ingredient.h"
 
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
+
+#define MAX_INGREDIENTS 1 // Nombre maximum d'ingrédients
 
 // Déclarations globales des variables de position
 int cercle_rouge_x = 200;
@@ -16,11 +19,26 @@ int cercle_rouge_y = 400;
 int cercle_bleu_x = 500;
 int cercle_bleu_y = 400;
 
-int curseur_x = 220;
-int curseur_Y = 410;
+/*int curseur_x = 220;
+int curseur_Y = 410;*/
 
 int curseur_X = 500;
 int curseur_y = 410;
+
+typedef struct {
+    int curseur_x;
+    int curseur_Y;
+} Position;
+
+// Fonction pour vérifier si le joueur est sur un ingrédient
+bool isInsideIngredient(Position playerPos, Position ingredientPos[], int numIngredients) {
+    for (int i = 0; i < numIngredients; i++) {
+        if (playerPos.curseur_x >= ingredientPos[i].curseur_x && playerPos.curseur_Y >= ingredientPos[i].curseur_Y && (playerPos.curseur_x <= ingredientPos[i].curseur_x + 50) && (playerPos.curseur_Y <= ingredientPos[i].curseur_Y + 50)) {
+            return true;  // Le joueur est sur cet ingrédient
+        }
+    }
+    return false;  // Le joueur n'est sur aucun ingrédient
+}
 
 
 int directionX_cuisinier2 = 1;
@@ -46,7 +64,15 @@ bool isInsideRectangle4(int x, int y) {
 }
 
 
-void deplace(BITMAP *buffer) {
+void deplace(BITMAP *buffer, Position playerPos) {
+    /*Position ingredientPos[MAX_INGREDIENTS] = {426, 319};
+    int numIngredients = 1;*/
+
+    int rectX1 = 462;
+    int rectY1 = 319;
+    int rectX2 = 494;
+    int rectY2 = 356;
+
 
     if (cuisinier2) {
         destroy_bitmap(cuisinier2);
@@ -67,29 +93,29 @@ void deplace(BITMAP *buffer) {
     if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 && !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) && !isInsideRectangle3(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y)) {
         cercle_rouge_x -= VITESSE_DEPLACEMENT;
         directionX_cuisinier2 = -1; // Gauche
-        curseur_Y = cercle_rouge_y + 40;
-        curseur_x = cercle_rouge_x - 10;
+        playerPos.curseur_Y = cercle_rouge_y + 40;
+        playerPos.curseur_x = cercle_rouge_x - 10;
 
     }
     if (key[KEY_RIGHT] && cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 725 && !isInsideRectangle2(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y) && !isInsideRectangle3(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y)) {
         cercle_rouge_x += VITESSE_DEPLACEMENT;
         directionX_cuisinier2 = 1; // Droite
-        curseur_Y = cercle_rouge_y + 40;
-        curseur_x = cercle_rouge_x + 50;
+        playerPos.curseur_Y = cercle_rouge_y + 40;
+        playerPos.curseur_x = cercle_rouge_x + 50;
 
     }
     if (key[KEY_UP] && cercle_rouge_y - VITESSE_DEPLACEMENT >= 180 && !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT) && !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT)) {
         cercle_rouge_y -= VITESSE_DEPLACEMENT;
-        curseur_Y = cercle_rouge_y - 10;
-        curseur_x = cercle_rouge_x + 20;
+        playerPos.curseur_Y = cercle_rouge_y - 10;
+        playerPos.curseur_x = cercle_rouge_x + 20;
 
     }
     if (key[KEY_DOWN] && cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 && !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT) && !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT)) {
         cercle_rouge_y += VITESSE_DEPLACEMENT;
-        curseur_Y = cercle_rouge_y + 70;
-        curseur_x = cercle_rouge_x + 20;
+        playerPos.curseur_Y = cercle_rouge_y + 70;
+        playerPos.curseur_x = cercle_rouge_x + 20;
     }
-    
+
 
     if (directionX_cuisinier2 == 1) {
         // Dessiner normalement (droite)
@@ -131,8 +157,20 @@ void deplace(BITMAP *buffer) {
         draw_sprite_v_flip(buffer, cuisinier1, cercle_bleu_x, cercle_bleu_y);
     }
 
-    circlefill(buffer, curseur_x, curseur_Y, 7, (0, 0, 255));
+    circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
     circlefill(buffer, curseur_X, curseur_y, 7, (0, 12, 12));
+
+    /*// Vérifier si le joueur est sur un ingrédient
+    if (isInsideIngredient(playerPos, ingredientPos, numIngredients)) {
+        allegro_message("Le joueur est sur un ingrédient !\n");
+    }*/
+
+    // Vérifier si le joueur est dans le rectangle d'ingrédient interdit
+    if (playerPos.curseur_x >= rectX1 && playerPos.curseur_x <= rectX2 &&
+        playerPos.curseur_Y >= rectY1 && playerPos.curseur_Y <= rectY2) {
+        allegro_message("Le joueur est sur un ingrédient !\n");
+    }
+
 }
 
 
