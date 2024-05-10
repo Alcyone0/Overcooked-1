@@ -5,13 +5,10 @@
 #include "deplace.h"
 #include <allegro.h>
 #include <stdbool.h>
-#include "ingredient.h"
 
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
-
-#define MAX_INGREDIENTS 1 // Nombre maximum d'ingrédients
 
 // Déclarations globales des variables de position
 int cercle_rouge_x = 200;
@@ -30,14 +27,29 @@ typedef struct {
     int curseur_Y;
 } Position;
 
-// Fonction pour vérifier si le joueur est sur un ingrédient
-bool isInsideIngredient(Position playerPos, Position ingredientPos[], int numIngredients) {
-    for (int i = 0; i < numIngredients; i++) {
-        if (playerPos.curseur_x >= ingredientPos[i].curseur_x && playerPos.curseur_Y >= ingredientPos[i].curseur_Y && (playerPos.curseur_x <= ingredientPos[i].curseur_x + 50) && (playerPos.curseur_Y <= ingredientPos[i].curseur_Y + 50)) {
-            return true;  // Le joueur est sur cet ingrédient
+typedef struct {
+    int x1; // Coordonnée x du coin supérieur gauche
+    int y1; // Coordonnée y du coin supérieur gauche
+    int x2; // Coordonnée x du coin inférieur droit
+    int y2; // Coordonnée y du coin inférieur droit
+    const char* nom; // Nom de l'ingrédient
+} ZoneIngredient;
+
+ZoneIngredient zonesIngredients[] = {
+        {462, 319, 494, 356, "assiette"},   // Exemple pour une tomate
+        {70, 249, 107, 280, "pates"},  // Ajoutez les autres ingrédients ici
+        // Ajoutez d'autres zones d'ingrédients selon vos besoins
+};
+
+bool isInsideIngredient(Position playerPos, ZoneIngredient zones[], int numZones) {
+    for (int i = 0; i < numZones; i++) {
+        if (playerPos.curseur_x >= zones[i].x1 && playerPos.curseur_x <= zones[i].x2 &&
+            playerPos.curseur_Y >= zones[i].y1 && playerPos.curseur_Y <= zones[i].y2 && key[KEY_P]) {
+            allegro_message("Le joueur est sur l'ingrédient : %s\n", zones[i].nom);
+            return true;
         }
     }
-    return false;  // Le joueur n'est sur aucun ingrédient
+    return false; // Le joueur n'est sur aucun ingrédient
 }
 
 
@@ -64,15 +76,7 @@ bool isInsideRectangle4(int x, int y) {
 }
 
 
-void deplace(BITMAP *buffer, Position playerPos) {
-    /*Position ingredientPos[MAX_INGREDIENTS] = {426, 319};
-    int numIngredients = 1;*/
-
-    int rectX1 = 462;
-    int rectY1 = 319;
-    int rectX2 = 494;
-    int rectY2 = 356;
-
+void deplace(BITMAP *buffer, Position playerPos, BITMAP *assiette) {
 
     if (cuisinier2) {
         destroy_bitmap(cuisinier2);
@@ -160,16 +164,11 @@ void deplace(BITMAP *buffer, Position playerPos) {
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
     circlefill(buffer, curseur_X, curseur_y, 7, (0, 12, 12));
 
-    /*// Vérifier si le joueur est sur un ingrédient
-    if (isInsideIngredient(playerPos, ingredientPos, numIngredients)) {
-        allegro_message("Le joueur est sur un ingrédient !\n");
-    }*/
+    if ((isInsideIngredient(playerPos, zonesIngredients, sizeof(zonesIngredients) / sizeof(ZoneIngredient))) && key[KEY_P]) {
+        masked_blit(assiette, buffer, 0, 0, playerPos.curseur_x, playerPos.curseur_Y, assiette->w, assiette->h);
 
-    // Vérifier si le joueur est dans le rectangle d'ingrédient interdit
-    if (playerPos.curseur_x >= rectX1 && playerPos.curseur_x <= rectX2 &&
-        playerPos.curseur_Y >= rectY1 && playerPos.curseur_Y <= rectY2) {
-        allegro_message("Le joueur est sur un ingrédient !\n");
     }
+
 
 }
 
