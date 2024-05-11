@@ -4,17 +4,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include "setup.h"
-#include <stdio.h>
 #include <allegro.h>
-#include <stdbool.h>
+//#include <stdbool.h>
 #include "deplace.h"
+//#include "plat.h"
+//#include "clients.h"
 
 // Dimensions de la fenêtre
 #define LARGEUR_ECRAN 800
 #define HAUTEUR_ECRAN 600
-
-
-
 
 
 BITMAP *image, *mozza, *pate, *poivron, *olive, *fromage, *champi, *tomate, *piz, *creme, *bacon, *assiette;
@@ -106,11 +104,15 @@ void loadImages() {
         allegro_message("Erreur lors du chargement de l'image1.");
         exit(EXIT_FAILURE);
     }
+
 }
 
 
 
+
 void setup(){
+
+    srand(time(NULL));
 
     loadImages();
 
@@ -119,6 +121,8 @@ void setup(){
     makecol(255, 0, 255);
 
     clear_to_color(buffer, makecol(255, 255, 255)); // Effacer le buffer avec la couleur blanche
+
+
 
 
     // Boucle de jeu
@@ -140,6 +144,7 @@ void setup(){
         masked_blit(bacon, buffer, 0, 0, 724, 355, bacon->w, bacon->h);
         masked_blit(olive, buffer, 0, 0, 724, 432, olive->w, olive->h);
         masked_blit(poivron, buffer, 0, 0, 730, 498, poivron->w, poivron->h);
+
 
         deplace();
 

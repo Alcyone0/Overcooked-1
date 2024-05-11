@@ -5,11 +5,36 @@
 #include "deplace.h"
 #include <allegro.h>
 #include <stdbool.h>
-#include "setup.h"
+//#include "setup.h"
+#include <time.h>
+#include <stdlib.h>
+#include "clients.h"
+#include "plat.h"
 
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
+
+BITMAP *plat_rose, *plat_vert, *plat_jaune;
+BITMAP *plat1 = NULL;
+BITMAP *plat2 = NULL;
+BITMAP *plat3 = NULL;
+
+int taille;
+
+bool flag_rose=false;
+bool flag_vert=false;
+bool flag_jaune=false;
+
+// délais aléatoire pour chaque client
+int delay_vert;
+int delay_rose;
+int delay_orange;
+
+int pos_rose ;
+int pos_jaune ;
+int pos_vert ;
+
 
 // Déclarations globales des variables de position
 int cercle_rouge_x = 200;
@@ -17,8 +42,6 @@ int cercle_rouge_y = 400;
 int cercle_bleu_x = 500;
 int cercle_bleu_y = 400;
 
-/*int curseur_x = 220;
-int curseur_Y = 410;*/
 
 int curseur_X = 500;
 int curseur_y = 410;
@@ -86,6 +109,14 @@ bool isInsideRectangle4(int x, int y) {
 
 void deplace(BITMAP *buffer, Position playerPos) {
 
+    srand(time(NULL));
+
+    // délais aléatoire pour chaque client
+    delay_vert = rand() % 4000 + 2000;
+    delay_rose = rand() % 3000 + 1500;
+    delay_orange = rand() % 2000 + 1000;
+
+    chargerimage(&plat1, &plat2, &plat3);
 
 
     if (cuisinier2) {
@@ -186,12 +217,31 @@ void deplace(BITMAP *buffer, Position playerPos) {
 
     masked_blit(assiette1, buffer, 0, 0, assiette1_x, assiette1_y, assiette1->w, assiette1->h);
 
+    chargerimage(&plat1, &plat2, &plat3);
+    recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
+    dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
+    avancerclients(&delay_vert,&delay_rose,&delay_orange);
+    revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
+
 
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
     circlefill(buffer, curseur_X, curseur_y, 7, (0, 12, 12));
 
 
     blit(buffer,screen,0,0,0,0,800,600);
+
+    if (plat1) {
+        destroy_bitmap(plat1);
+        plat1 = NULL;
+    }
+    if (plat2) {
+        destroy_bitmap(plat2);
+        plat2 = NULL;
+    }
+    if (plat3) {
+        destroy_bitmap(plat3);
+        plat3 = NULL;
+    }
 
 
 }
