@@ -5,6 +5,7 @@
 #include "deplace.h"
 #include <allegro.h>
 #include <stdbool.h>
+#include "setup.h"
 
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
@@ -45,12 +46,19 @@ bool isInsideIngredient(Position playerPos, ZoneIngredient zones[], int numZones
     for (int i = 0; i < numZones; i++) {
         if (playerPos.curseur_x >= zones[i].x1 && playerPos.curseur_x <= zones[i].x2 &&
             playerPos.curseur_Y >= zones[i].y1 && playerPos.curseur_Y <= zones[i].y2 && key[KEY_P]) {
-            allegro_message("Le joueur est sur l'ingrédient : %s\n", zones[i].nom);
+            //allegro_message("Le joueur est sur l'ingrédient : %s\n", zones[i].nom);
             return true;
         }
     }
     return false; // Le joueur n'est sur aucun ingrédient
 }
+
+bool passe_sur_case = false;
+
+int assiette1_x = 455;
+int assiette1_y = 320;
+
+BITMAP *assiette1;
 
 
 int directionX_cuisinier2 = 1;
@@ -76,7 +84,9 @@ bool isInsideRectangle4(int x, int y) {
 }
 
 
-void deplace(BITMAP *buffer, Position playerPos, BITMAP *assiette) {
+void deplace(BITMAP *buffer, Position playerPos) {
+
+
 
     if (cuisinier2) {
         destroy_bitmap(cuisinier2);
@@ -88,10 +98,12 @@ void deplace(BITMAP *buffer, Position playerPos, BITMAP *assiette) {
     }
     cuisinier2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier2.bmp", NULL);
     cuisinier1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier1.bmp", NULL);
-    if (!cuisinier1 || !cuisinier2) {
+    assiette1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
+    if (!cuisinier1 || !cuisinier2 || !assiette1 ) {
         allegro_message("Erreur lors du chargement de l'image.");
         exit(EXIT_FAILURE);
     }
+
 
     // Déplacer et dessiner le cercle rouge (cuisinier 2)
     if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 && !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) && !isInsideRectangle3(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y)) {
@@ -161,15 +173,25 @@ void deplace(BITMAP *buffer, Position playerPos, BITMAP *assiette) {
         draw_sprite_v_flip(buffer, cuisinier1, cercle_bleu_x, cercle_bleu_y);
     }
 
+    // Vérifie si le cercle rouge passe sur les coordonnées spécifiées
+    if (((playerPos.curseur_x >= 462 && playerPos.curseur_x <= 494 &&
+          playerPos.curseur_Y >= 319 && playerPos.curseur_Y <= 356) && !passe_sur_case) && (key[KEY_P])){
+        passe_sur_case = true;
+    }
+
+    if (passe_sur_case) {
+        assiette1_x = playerPos.curseur_x - 10;
+        assiette1_y = playerPos.curseur_Y - 10;
+    }
+
+    masked_blit(assiette1, buffer, 0, 0, assiette1_x, assiette1_y, assiette1->w, assiette1->h);
+
+
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
     circlefill(buffer, curseur_X, curseur_y, 7, (0, 12, 12));
 
-    if ((isInsideIngredient(playerPos, zonesIngredients, sizeof(zonesIngredients) / sizeof(ZoneIngredient))) && key[KEY_P]) {
-        masked_blit(assiette, buffer, 0, 0, playerPos.curseur_x, playerPos.curseur_Y, assiette->w, assiette->h);
 
-    }
+    blit(buffer,screen,0,0,0,0,800,600);
 
 
 }
-
-

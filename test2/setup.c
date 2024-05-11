@@ -17,7 +17,7 @@
 
 
 
-BITMAP *image, *assiette, *mozza, *pate, *poivron, *olive, *fromage, *champi, *tomate, *piz, *creme, *bacon;
+BITMAP *image, *mozza, *pate, *poivron, *olive, *fromage, *champi, *tomate, *piz, *creme, *bacon, *assiette;
 BITMAP *buffer;
 
 void cleanupp() {
@@ -37,10 +37,7 @@ void cleanupp() {
         champi = NULL;
     }
 
-    if (assiette) {
-        destroy_bitmap(assiette);
-        assiette = NULL;
-    }
+
     if (olive) {
         destroy_bitmap(olive);
         olive = NULL;
@@ -55,6 +52,11 @@ void cleanupp() {
         destroy_bitmap(pate);
         pate = NULL;
     }
+    if (assiette) {
+        destroy_bitmap(assiette);
+        assiette = NULL;
+    }
+
 
     if (fromage) {
         destroy_bitmap(fromage);
@@ -107,6 +109,7 @@ void loadImages() {
 }
 
 
+
 void setup(){
 
     loadImages();
@@ -140,7 +143,7 @@ void setup(){
 
         deplace();
 
-        blit(buffer,screen,0,0,0,0,800,600);
+
 
         // Rafraîchir l'écran
         rest(20);
