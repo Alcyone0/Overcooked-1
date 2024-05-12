@@ -1,13 +1,6 @@
-//
-// Created by ACER on 11/05/2024.
-//
-
 #include "plat.h"
 #include <allegro.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <time.h>
-
 
 // sous programme aléatoire pour le plat choisi par les clients
 BITMAP* choisir_image(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, int *taille) {
@@ -24,27 +17,24 @@ BITMAP* choisir_image(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, int *taille) 
             return plat3;
     }
 }
-
-int chargerimage(BITMAP *plat1,BITMAP *plat2,BITMAP *plat3) {
-    plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat1.bmp", NULL);
-    if (!plat1) {
+void chargerimage(BITMAP **plat1,BITMAP **plat2,BITMAP **plat3) {
+    *plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat1.bmp", NULL);
+    if (!*plat1) {
         allegro_message("Erreur lors du chargement de l'imageE.");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
-    plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat2.bmp", NULL);
-    if (!plat2) {
+    *plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat2.bmp", NULL);
+    if (!*plat2) {
         allegro_message("Erreur lors du chargement de l'imageE.");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
-    plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3.bmp", NULL);
-    if (!plat3) {
+    *plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3.bmp", NULL);
+    if (!*plat3) {
         allegro_message("Erreur lors du chargement de l'imageE.");
-        return -1;
+        exit(EXIT_FAILURE);
     }
-
-
 }
 
 void recupererimage(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, BITMAP **plat_rose, BITMAP **plat_vert, BITMAP **plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune,int *pos_rose, int *pos_vert, int *pos_jaune) {
@@ -63,4 +53,3 @@ void recupererimage(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, BITMAP **plat_r
         *pos_jaune = 570 - taille;
     }
 }
-

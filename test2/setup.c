@@ -7,8 +7,8 @@
 #include <allegro.h>
 #include <stdbool.h>
 #include "deplace.h"
-//#include "plat.h"
-//#include "clients.h"
+#include "plat.h"
+#include "clients.h"
 
 // Dimensions de la fenêtre
 #define LARGEUR_ECRAN 800
@@ -17,6 +17,23 @@
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
+
+BITMAP *plat_rose, *plat_vert, *plat_jaune;
+BITMAP *plat1 = NULL;
+BITMAP *plat2 = NULL;
+BITMAP *plat3 = NULL;
+int taille;
+bool flag_rose=false;
+bool flag_vert=false;
+bool flag_jaune=false;
+// délais aléatoire pour chaque client
+int delay_vert;
+int delay_rose;
+int delay_orange;
+
+int pos_rose ;
+int pos_jaune ;
+int pos_vert ;
 
 
 BITMAP *image, *mozza, *pate, *poivron, *olive, *fromage, *champi, *tomate, *piz, *creme, *bacon, *assiette, *cuisinier1, *cuisinier2 ;
@@ -90,6 +107,19 @@ void cleanupp() {
         destroy_bitmap(cuisinier1);
         cuisinier1 = NULL;
     }
+    if (plat1) {
+        destroy_bitmap(plat1);
+        plat1 = NULL;
+    }
+    if (plat2) {
+        destroy_bitmap(plat2);
+        plat2 = NULL;
+    }
+    if (plat3) {
+        destroy_bitmap(plat3);
+        plat3 = NULL;
+    }
+
 }
 
 void loadImages() {
@@ -118,6 +148,8 @@ void loadImages() {
         allegro_message("Erreur lors du chargement de l'image1.");
         exit(EXIT_FAILURE);
     }
+
+    srand(time(NULL));
 
 }
 
@@ -150,6 +182,59 @@ bool isInsideRectangle4(int x, int y) {
     return (x >= 235 && x <= 570 && y >= 510 && y <= 600);
 }
 
+/*// Variables de position des cercles
+int cercle_vert_x = 0;
+int cercle_rose_x = 0;
+int cercle_orange_x = 0;
+
+// Délais aléatoires pour chaque client
+int delay_vert = 0;
+int delay_rose = 0;
+int delay_orange = 0;
+
+// Fonction pour avancer les clients
+void avancerclients(int *delay_vert, int *delay_rose, int *delay_orange) {
+    // Déplacement automatique du cercle vert (client)
+    if (*delay_vert <= 0 && cercle_vert_x < LARGEUR_ECRAN) {
+        cercle_vert_x += VITESSE_DEPLACEMENT;
+    } else {
+        (*delay_vert) -= 20; // Décrémente le délai
+    }
+
+    // Déplacement automatique du cercle rose (client)
+    if (*delay_rose <= 0 && cercle_rose_x < LARGEUR_ECRAN) {
+        cercle_rose_x += VITESSE_DEPLACEMENT;
+    } else {
+        (*delay_rose) -= 20; // Décrémente le délai
+    }
+
+    // Déplacement automatique du cercle orange (client)
+    if (*delay_orange <= 0 && cercle_orange_x < LARGEUR_ECRAN) {
+        cercle_orange_x += VITESSE_DEPLACEMENT;
+    } else {
+        (*delay_orange) -= 20; // Décrémente le délai
+    }
+}
+
+// Fonction pour faire revenir les clients à gauche de l'écran
+void revenirclients() {
+    // Réinitialisation des positions des cercles clients
+    if (cercle_vert_x >= LARGEUR_ECRAN) {
+        cercle_vert_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
+        delay_vert = rand() % 4000 + 2000; // Nouveau délai aléatoire
+    }
+
+    if (cercle_rose_x >= LARGEUR_ECRAN) {
+        cercle_rose_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
+        delay_rose = rand() % 3000 + 1500; // Nouveau délai aléatoire
+    }
+
+    if (cercle_orange_x >= LARGEUR_ECRAN) {
+        cercle_orange_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
+        delay_orange = rand() % 2000 + 1000; // Nouveau délai aléatoire
+    }
+}
+*/
 
 
 
@@ -158,6 +243,9 @@ void setup(){
 
     //srand(time(NULL));
 
+    /*bool flag_vert = false, flag_rose = false, flag_jaune = false;
+    int delay_vert = 0, delay_rose = 0, delay_orange = 0;*/
+
     loadImages();
 
     install_keyboard();
@@ -165,6 +253,13 @@ void setup(){
     makecol(255, 0, 255);
 
     clear_to_color(buffer, makecol(255, 255, 255)); // Effacer le buffer avec la couleur blanche
+
+    // délais aléatoire pour chaque client
+    delay_vert = rand() % 4000 + 2000;
+    delay_rose = rand() % 3000 + 1500;
+    delay_orange = rand() % 2000 + 1000;
+
+    chargerimage(&plat1, &plat2, &plat3);
 
     Position playerPos;
     playerPos.curseur_x = cercle_rouge_x; // Par exemple, utilisez la position du cercle rouge
@@ -183,6 +278,13 @@ void setup(){
 
         blit(image, buffer, 0, 0, 0, 0, image->w, image->h);
 
+        /*// délais aléatoire pour chaque client
+        delay_vert = rand() % 4000 + 2000;
+        delay_rose = rand() % 3000 + 1500;
+        delay_orange = rand() % 2000 + 1000;*/
+
+        //chargerimage(plat1, plat2, plat3);
+
         masked_blit(assiette, buffer, 0, 0, 455, 320, assiette->w, assiette->h);
 
         masked_blit(pate, buffer, 0, 0, 72, 255, pate->w, pate->h);
@@ -196,6 +298,18 @@ void setup(){
         masked_blit(bacon, buffer, 0, 0, 724, 355, bacon->w, bacon->h);
         masked_blit(olive, buffer, 0, 0, 724, 432, olive->w, olive->h);
         masked_blit(poivron, buffer, 0, 0, 730, 498, poivron->w, poivron->h);
+
+        chargerimage(&plat1, &plat2, &plat3);
+        recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
+        dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
+        avancerclients(&delay_vert,&delay_rose,&delay_orange);
+        revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
+
+        /*//chargerimage(plat1, plat2, plat3);
+        //recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, flag_rose, flag_vert, flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
+        dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
+        avancerclients(&delay_vert,&delay_rose,&delay_orange);
+        //revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);*/
 
         // Déplacer et dessiner le cercle rouge (cuisinier 2)
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
@@ -281,10 +395,7 @@ void setup(){
             draw_sprite_v_flip(buffer, cuisinier1, cercle_bleu_x, cercle_bleu_y);
         }
 
-
         deplace(buffer, playerPos, playerPos1);
-
-
 
         // Rafraîchir l'écran
         rest(20);

@@ -1,13 +1,8 @@
-//
-// Created by ACER on 11/05/2024.
-//
-
 #include "clients.h"
-//#include "plat.h"
+#include "plat.h"
 #include <allegro.h>
 #include <time.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
@@ -36,7 +31,6 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
 
 // clients
     circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
-    //printf("cercle vert");
     circlefill(buffer, cercle_rose_x, cercle_rose_y, TAILLE_CERCLE, makecol(255, 0, 255));
     circlefill(buffer, cercle_orange_x, cercle_orange_y, TAILLE_CERCLE, makecol(255, 255, 0));
 
@@ -76,36 +70,32 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
 }
 
 void avancerclients(int *delay_vert, int *delay_rose, int *delay_orange) {
-    //printf("debut avancer");
-    // Déplacement automatique du cercle vert (client)
+//Déplacement des clients
+// déplacement automatique du cercle vert (client)
+
     if (*delay_vert <= 0 && cercle_vert_x < 600) {
         cercle_vert_x += VITESSE_DEPLACEMENT;
     } else {
-        (*delay_vert) -= 20; // Décrémente le délai
+        *delay_vert -= 20; // Décrémente le délai
     }
 
-
-    // Déplacement automatique du cercle rose (client)
+// déplacement automatique du cercle rose (client)
     if (*delay_rose <= 0 && cercle_rose_x < 400) {
         cercle_rose_x += VITESSE_DEPLACEMENT;
     } else {
-        (*delay_rose) -= 20; // Décrémente le délai
+        *delay_rose -= 20; // Décrémente le délai
     }
 
-    // Déplacement automatique du cercle orange (client)
+// déplacement automatique du cercle orange (client)
     if (*delay_orange <= 0 && cercle_orange_x < 200) {
         cercle_orange_x += VITESSE_DEPLACEMENT;
     } else {
-        //printf("fin avancer orange");
-        (*delay_orange) -= 20; // Décrémente le délai
+        *delay_orange -= 20; // Décrémente le délai
     }
-    //printf("fin avancer");
 }
 
 void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *delay_vert, int *delay_rose, int *delay_orange) {
 //Départ des clients
-
-
 // condition pour que la boule verte parte
     if (key[KEY_U] || temps_ecouleV >= 30000)
         while (cercle_vert_x < 900) {
@@ -154,5 +144,3 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
     }
 
 }
-
-

@@ -6,11 +6,10 @@
 #include <allegro.h>
 #include <stdbool.h>
 //#include "setup.h"
-#include <time.h>
+//#include <time.h>
 #include <stdlib.h>
-#include "clients.h"
-#include "plat.h"
-#include <stdio.h>
+//#include "plat.h"
+//#include <stdio.h>
 
 
 //--------------------------------------------------CODE ESTELLE ------------------------------------------------
@@ -19,7 +18,7 @@
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 5
 #define MAX_INGREDIENTS 8
-#define MAX_INGREDIENTS_RAMASSES 4
+//#define MAX_INGREDIENTS_RAMASSES 4
 
 
 
@@ -27,8 +26,8 @@
 
 
 
-int ingredientsRamasses[MAX_INGREDIENTS_RAMASSES]; // Tableau pour les indices des ingrédients ramassés
-int nbIngredientsRamasses = 0; // Nombre d'ingrédients actuellement ramassés
+/*int ingredientsRamasses[MAX_INGREDIENTS_RAMASSES]; // Tableau pour les indices des ingrédients ramassés
+int nbIngredientsRamasses = 0; // Nombre d'ingrédients actuellement ramassés*/
 
 
 /*typedef struct {
@@ -113,6 +112,7 @@ void initIngredients() {
 }
 
 bool passe_sur_case = false;
+bool passe_sur_case1 = false;
 
 
 int table_x = 568;
@@ -120,13 +120,6 @@ int table_y = 612;
 
 
 int ingredientRamasse = -1;
-
-
-
-
-//BITMAP *cuisinier2, *cuisinier1;
-
-
 
 
 void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
@@ -164,8 +157,38 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     //--------------------------------------------------FIN CODE ESTELLE-----------------------------------------------------------
 
 
-    circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
-    circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (0, 12, 12));
+    circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
+    circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
+
+    for (int i = 0; i < MAX_INGREDIENTS; i++) {
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone)) && key[KEY_P]) {
+            ingredients[i].picked = true;
+            ingredientRamasse = i;
+            passe_sur_case1 = true;
+        }
+        if (passe_sur_case1 && i == ingredientRamasse) {
+
+            masked_blit(ingredients[i].image, buffer, 0, 0, playerPos1.curseur_x - 10, playerPos1.curseur_Y - 10,
+                        ingredients[i].image->w, ingredients[i].image->h);
+
+        }
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone )) && key[KEY_P]){
+            passe_sur_case1 = false;
+            //ingredients[i].picked = false;
+
+        }
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone )) && key[KEY_P]){
+            passe_sur_case1 = false;
+            //ingredients[i].picked = false;
+
+            masked_blit(ingredients[i].image, buffer, 0, 0, table_x, table_y,
+                        ingredients[i].image->w, ingredients[i].image->h);
+
+
+        }
+
+        // Autres vérifications de zone et d'actions pour playerPos1 ici...
+    }
 
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
 
