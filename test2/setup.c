@@ -87,7 +87,7 @@ void loadImages() {
         allegro_message("Erreur lors de la création du buffer.");
         exit(EXIT_FAILURE);
     }
-    image = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fond.bmp", NULL);
+    image = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fondjeu_nv1.bmp", NULL);
     assiette = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
     mozza = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
     pate = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\pate.bmp", NULL);
