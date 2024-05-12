@@ -21,48 +21,20 @@
 #define MAX_INGREDIENTS 8
 #define MAX_INGREDIENTS_RAMASSES 4
 
-BITMAP *plat_rose, *plat_vert, *plat_jaune;
-BITMAP *plat1 = NULL;
-BITMAP *plat2 = NULL;
-BITMAP *plat3 = NULL;
 
-int taille;
-
-bool flag_rose=false;
-bool flag_vert=false;
-bool flag_jaune=false;
-
-// délais aléatoire pour chaque client
-int delay_vert;
-int delay_rose;
-int delay_orange;
-
-int pos_rose ;
-int pos_jaune ;
-int pos_vert ;
 
 //--------------------------------------------------------------------FIN CODE ESTELLE ---------------------------------------
 
 
 
-// Déclarations globales des variables de position
-int cercle_rouge_x = 200;
-int cercle_rouge_y = 400;
-int cercle_bleu_x = 500;
-int cercle_bleu_y = 400;
-
-
-int curseur_X = 500;
-int curseur_y = 410;
-
 int ingredientsRamasses[MAX_INGREDIENTS_RAMASSES]; // Tableau pour les indices des ingrédients ramassés
 int nbIngredientsRamasses = 0; // Nombre d'ingrédients actuellement ramassés
 
 
-typedef struct {
+/*typedef struct {
     int curseur_x;
     int curseur_Y;
-} Position;
+} Position;*/
 
 typedef struct {
     int x_min;
@@ -149,31 +121,15 @@ int table_y = 612;
 
 int ingredientRamasse = -1;
 
-int directionX_cuisinier2 = 1;
-int directionX_cuisinier1 = 1; // 1 pour droite, -1 pour gauche
-
-BITMAP *cuisinier2, *cuisinier1;
-
-// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
-bool isInsideRectangle1(int x, int y) {
-    return (x >= 328 && x <= 490 && y >= 220 && y <= 405);
-}
-// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
-bool isInsideRectangle2(int x, int y) {
-    return (x >= 338 && x <= 490 && y >= 220 && y <= 390);
-}
-// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
-bool isInsideRectangle3(int x, int y) {
-    return (x >= 260 && x <= 570 && y >= 500 && y <= 600);
-}
-// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
-bool isInsideRectangle4(int x, int y) {
-    return (x >= 235 && x <= 570 && y >= 510 && y <= 600);
-}
 
 
-void deplace(BITMAP *buffer, Position playerPos) {
 
+//BITMAP *cuisinier2, *cuisinier1;
+
+
+
+
+void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
 
 
     Zone tableZone = {568, 609, 183, 219};
@@ -181,29 +137,10 @@ void deplace(BITMAP *buffer, Position playerPos) {
 
     //--------------------------------------------------CODE ESTELLE----------------------------------------------------
 
-    srand(time(NULL)); //CODE ESTELLE
 
-    // délais aléatoire pour chaque client
-    delay_vert = rand() % 4000 + 2000;
-    delay_rose = rand() % 3000 + 1500;
-    delay_orange = rand() % 2000 + 1000;
-
-    chargerimage(&plat1, &plat2, &plat3);
-
-    //------------------------------------------------FIN CODE ESTELLE-----------------------------------------------------
+    //------------------------------------------------FIN CODE ESTELLE--------------------------------------------------
 
 
-    if (cuisinier2) {
-        destroy_bitmap(cuisinier2);
-        cuisinier2 = NULL;
-    }
-    if (cuisinier1) {
-        destroy_bitmap(cuisinier1);
-        cuisinier1 = NULL;
-    }
-
-    cuisinier2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier2.bmp", NULL);
-    cuisinier1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier1.bmp", NULL);
     assiette1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
     pate1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\pate.bmp", NULL);
     champi1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\champi.bmp", NULL);
@@ -213,7 +150,7 @@ void deplace(BITMAP *buffer, Position playerPos) {
     piZ1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\piz.bmp", NULL);
     mozza1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
 
-    if (!cuisinier1 || !cuisinier2 || !assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 ) {
+    if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 ) {
         allegro_message("Erreur lors du chargement de l'image.");
         exit(EXIT_FAILURE);
     }
@@ -221,129 +158,14 @@ void deplace(BITMAP *buffer, Position playerPos) {
     // Initialiser les ingrédients au début du jeu
     initIngredients();
 
-    // Déplacer et dessiner le cercle rouge (cuisinier 2)
-    if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
-        !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
-        !isInsideRectangle3(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y)) {
-        cercle_rouge_x -= VITESSE_DEPLACEMENT;
-        directionX_cuisinier2 = -1; // Gauche
-        playerPos.curseur_Y = cercle_rouge_y + 40;
-        playerPos.curseur_x = cercle_rouge_x - 10;
-
-    }
-    if (key[KEY_RIGHT] && cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 725 &&
-        !isInsideRectangle2(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y) &&
-        !isInsideRectangle3(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y)) {
-        cercle_rouge_x += VITESSE_DEPLACEMENT;
-        directionX_cuisinier2 = 1; // Droite
-        playerPos.curseur_Y = cercle_rouge_y + 40;
-        playerPos.curseur_x = cercle_rouge_x + 50;
-
-    }
-    if (key[KEY_UP] && cercle_rouge_y - VITESSE_DEPLACEMENT >= 180 &&
-        !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT) &&
-        !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT)) {
-        cercle_rouge_y -= VITESSE_DEPLACEMENT;
-        playerPos.curseur_Y = cercle_rouge_y - 10;
-        playerPos.curseur_x = cercle_rouge_x + 20;
-
-    }
-    if (key[KEY_DOWN] && cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 &&
-        !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT) &&
-        !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT)) {
-        cercle_rouge_y += VITESSE_DEPLACEMENT;
-        playerPos.curseur_Y = cercle_rouge_y + 70;
-        playerPos.curseur_x = cercle_rouge_x + 20;
-    }
-
-
-    if (directionX_cuisinier2 == 1) {
-        // Dessiner normalement (droite)
-        draw_sprite(buffer, cuisinier2, cercle_rouge_x, cercle_rouge_y);
-    } else {
-        // Dessiner en miroir horizontal (gauche)
-        draw_sprite_h_flip(buffer, cuisinier2, cercle_rouge_x, cercle_rouge_y);
-    }
-
-    // Déplacer et dessiner le cercle bleu (cuisinier 1)
-    if (key[KEY_A] && cercle_bleu_x - VITESSE_DEPLACEMENT >= 105 &&
-        !isInsideRectangle1(cercle_bleu_x - VITESSE_DEPLACEMENT, cercle_bleu_y) &&
-        !isInsideRectangle4(cercle_bleu_x - VITESSE_DEPLACEMENT, cercle_bleu_y)) {
-        cercle_bleu_x -= VITESSE_DEPLACEMENT;
-        directionX_cuisinier1 = -1; // Gauche
-        curseur_y = cercle_bleu_y + 40;
-        curseur_X = cercle_bleu_x - 10;
-    }
-    if (key[KEY_D] && cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 705 &&
-        !isInsideRectangle1(cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_bleu_y) &&
-        !isInsideRectangle4(cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_bleu_y)) {
-        cercle_bleu_x += VITESSE_DEPLACEMENT;
-        directionX_cuisinier1 = 1; // Droite
-        curseur_y = cercle_bleu_y + 35;
-        curseur_X = cercle_bleu_x + 70;
-    }
-    if (key[KEY_W] && cercle_bleu_y - VITESSE_DEPLACEMENT >= 180 &&
-        !isInsideRectangle1(cercle_bleu_x, cercle_bleu_y - VITESSE_DEPLACEMENT) &&
-        !isInsideRectangle4(cercle_bleu_x, cercle_bleu_y - VITESSE_DEPLACEMENT)) {
-        cercle_bleu_y -= VITESSE_DEPLACEMENT;
-        curseur_y = cercle_bleu_y - 10;
-        curseur_X = cercle_bleu_x + 20;
-    }
-    if (key[KEY_S] && cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 &&
-        !isInsideRectangle1(cercle_bleu_x, cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT) &&
-        !isInsideRectangle4(cercle_bleu_x, cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT)) {
-        cercle_bleu_y += VITESSE_DEPLACEMENT;
-        curseur_y = cercle_bleu_y + 70;
-        curseur_X = cercle_bleu_x + 20;
-    }
-
-    if (directionX_cuisinier1 == 1) {
-        // Dessiner normalement (droite)
-        draw_sprite_vh_flip(buffer, cuisinier1, cercle_bleu_x, cercle_bleu_y);
-    } else {
-        // Dessiner en miroir horizontal (gauche)
-        draw_sprite_v_flip(buffer, cuisinier1, cercle_bleu_x, cercle_bleu_y);
-    }
-
-
     //----------------------------------------------------------CODE ESTELLE----------------------------------------------------------------
 
-    chargerimage(&plat1, &plat2, &plat3);
-    recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,
-                   &pos_rose, &pos_vert, &pos_jaune);
-    dessinerclients(buffer, plat_rose, plat_vert, plat_jaune, &flag_rose, &flag_vert, &flag_jaune);
-    avancerclients(&delay_vert, &delay_rose, &delay_orange);
-    revenirclients(&flag_vert, &flag_rose, &flag_jaune, &delay_vert, &delay_rose, &delay_orange);
 
     //--------------------------------------------------FIN CODE ESTELLE-----------------------------------------------------------
 
 
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (0, 0, 255));
-    circlefill(buffer, curseur_X, curseur_y, 7, (0, 12, 12));
-
-    /*for (int i = 0; i < MAX_INGREDIENTS; i++) {
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone)) && key[KEY_P]) {
-            if (nbIngredientsRamasses < MAX_INGREDIENTS_RAMASSES) {
-                // Ramasser l'ingrédient en ajoutant son index à la liste des ingrédients ramassés
-                ingredientsRamasses[nbIngredientsRamasses++] = i;
-                ingredients[i].picked = true;
-                passe_sur_case = true;
-            }
-        }
-    }*/
-
-    /*/ Dessiner les ingrédients ramassés à la position du curseur
-    for (int j = 0; j < nbIngredientsRamasses; j++) {
-        int index = ingredientsRamasses[j];
-        if (passe_sur_case && index < MAX_INGREDIENTS && ingredients[index].picked) {
-            // Dessiner l'image de l'ingrédient à côté du curseur, en décalant légèrement pour chaque ingrédient empilé
-            //int offsetX = j * 20; // Ajustez la valeur de décalage selon vos besoins
-            masked_blit(ingredients[index].image, buffer, 0, 0, playerPos.curseur_x - 10 + offsetX, playerPos.curseur_Y - 10,
-                        ingredients[index].image->w, ingredients[index].image->h);
-        }
-    }*/
-
-
+    circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (0, 12, 12));
 
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
 
@@ -375,9 +197,6 @@ void deplace(BITMAP *buffer, Position playerPos) {
 
     }
 
-
-
-
     blit(buffer,screen,0,0,0,0,800,600);
 
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
@@ -389,20 +208,9 @@ void deplace(BITMAP *buffer, Position playerPos) {
 
 
     //---------------------------------------------------------CODE ESTELLE---------------------------------------------------
-    if (plat1) {
-        destroy_bitmap(plat1);
-        plat1 = NULL;
-    }
-    if (plat2) {
-        destroy_bitmap(plat2);
-        plat2 = NULL;
-    }
-    if (plat3) {
-        destroy_bitmap(plat3);
-        plat3 = NULL;
-    }
+
 
     //-----------------------------------------------------------FIN CODE ESTELLE----------------------------------------------------
-    nbIngredientsRamasses = 0;
+
 
 }

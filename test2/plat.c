@@ -25,21 +25,21 @@ BITMAP* choisir_image(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, int *taille) 
     }
 }
 
-int chargerimage(BITMAP **plat1,BITMAP **plat2,BITMAP **plat3) {
-    *plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat1.bmp", NULL);
-    if (!*plat1) {
+int chargerimage(BITMAP *plat1,BITMAP *plat2,BITMAP *plat3) {
+    plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat1.bmp", NULL);
+    if (!plat1) {
         allegro_message("Erreur lors du chargement de l'imageE.");
         return -1;
     }
 
-    *plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat2.bmp", NULL);
-    if (!*plat2) {
+    plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat2.bmp", NULL);
+    if (!plat2) {
         allegro_message("Erreur lors du chargement de l'imageE.");
         return -1;
     }
 
-    *plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3.bmp", NULL);
-    if (!*plat3) {
+    plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3.bmp", NULL);
+    if (!plat3) {
         allegro_message("Erreur lors du chargement de l'imageE.");
         return -1;
     }
