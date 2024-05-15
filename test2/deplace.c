@@ -174,7 +174,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
                             ingredients[i].image->w, ingredients[i].image->h);
 
         }
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone )) && key[KEY_M]){
+        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone )) && key[KEY_K]){
             passe_sur_case = false;
             ingredients[i].picked = false;
 

@@ -23,6 +23,14 @@ add_executable(test2 main.c
         deplace.c
         deplace.h
         nv1.c
-        nv1.h)
+        nv1.h
+        ingredient.c
+        ingredient.h
+        plat.c
+        plat.h
+        clients.c
+        clients.h
+        saisirpseudo.c
+        saisirpseudo.h)
 
 target_link_libraries(test2 -lmingw32 -lalleg44)

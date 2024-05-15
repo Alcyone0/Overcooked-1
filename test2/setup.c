@@ -9,6 +9,7 @@
 #include "deplace.h"
 #include "plat.h"
 #include "clients.h"
+#include "saisirpseudo.h"
 
 // Dimensions de la fenêtre
 #define LARGEUR_ECRAN 800
@@ -30,6 +31,9 @@ bool flag_jaune=false;
 int delay_vert;
 int delay_rose;
 int delay_orange;
+
+
+char pseudo1[50], pseudo2[50];
 
 int pos_rose ;
 int pos_jaune ;
@@ -167,8 +171,8 @@ int cercle_rouge_x = 200;
 int cercle_rouge_y = 400;
 int cercle_bleu_x = 500;
 int cercle_bleu_y = 400;
-int curseur_X = 500;
-int curseur_y = 410;
+/*int curseur_X = 500;
+int curseur_y = 410;*/
 
 int directionX_cuisinier2 = 1;
 int directionX_cuisinier1 = 1; // 1 pour droite, -1 pour gauche
@@ -211,6 +215,8 @@ void setup(){
 
     chargerimage(&plat1, &plat2, &plat3);
 
+    //saisie_pseudos(pseudo1, pseudo2);
+
     Position playerPos;
     playerPos.curseur_x = cercle_rouge_x; // Par exemple, utilisez la position du cercle rouge
     playerPos.curseur_Y = cercle_rouge_y;
@@ -246,23 +252,7 @@ void setup(){
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
         dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
-
-
-
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
-
-       /* if (plat1) {
-            destroy_bitmap(plat1);
-            plat1 = NULL;
-        }
-        if (plat2) {
-            destroy_bitmap(plat2);
-            plat2 = NULL;
-        }
-        if (plat3) {
-            destroy_bitmap(plat3);
-            plat3 = NULL;
-        }*/
 
 
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
@@ -349,9 +339,6 @@ void setup(){
         }
 
         deplace(buffer, playerPos, playerPos1);
-
-
-
 
         // Rafraîchir l'écran
         rest(20);
