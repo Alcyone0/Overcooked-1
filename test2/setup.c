@@ -107,6 +107,11 @@ void cleanupp() {
         destroy_bitmap(cuisinier1);
         cuisinier1 = NULL;
     }
+
+    if (buffer) {
+        destroy_bitmap(buffer);
+        buffer = NULL;
+    }
     if (plat1) {
         destroy_bitmap(plat1);
         plat1 = NULL;
@@ -119,6 +124,10 @@ void cleanupp() {
         destroy_bitmap(plat3);
         plat3 = NULL;
     }
+
+
+
+
 
 }
 
@@ -182,69 +191,10 @@ bool isInsideRectangle4(int x, int y) {
     return (x >= 235 && x <= 570 && y >= 510 && y <= 600);
 }
 
-/*// Variables de position des cercles
-int cercle_vert_x = 0;
-int cercle_rose_x = 0;
-int cercle_orange_x = 0;
-
-// Délais aléatoires pour chaque client
-int delay_vert = 0;
-int delay_rose = 0;
-int delay_orange = 0;
-
-// Fonction pour avancer les clients
-void avancerclients(int *delay_vert, int *delay_rose, int *delay_orange) {
-    // Déplacement automatique du cercle vert (client)
-    if (*delay_vert <= 0 && cercle_vert_x < LARGEUR_ECRAN) {
-        cercle_vert_x += VITESSE_DEPLACEMENT;
-    } else {
-        (*delay_vert) -= 20; // Décrémente le délai
-    }
-
-    // Déplacement automatique du cercle rose (client)
-    if (*delay_rose <= 0 && cercle_rose_x < LARGEUR_ECRAN) {
-        cercle_rose_x += VITESSE_DEPLACEMENT;
-    } else {
-        (*delay_rose) -= 20; // Décrémente le délai
-    }
-
-    // Déplacement automatique du cercle orange (client)
-    if (*delay_orange <= 0 && cercle_orange_x < LARGEUR_ECRAN) {
-        cercle_orange_x += VITESSE_DEPLACEMENT;
-    } else {
-        (*delay_orange) -= 20; // Décrémente le délai
-    }
-}
-
-// Fonction pour faire revenir les clients à gauche de l'écran
-void revenirclients() {
-    // Réinitialisation des positions des cercles clients
-    if (cercle_vert_x >= LARGEUR_ECRAN) {
-        cercle_vert_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
-        delay_vert = rand() % 4000 + 2000; // Nouveau délai aléatoire
-    }
-
-    if (cercle_rose_x >= LARGEUR_ECRAN) {
-        cercle_rose_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
-        delay_rose = rand() % 3000 + 1500; // Nouveau délai aléatoire
-    }
-
-    if (cercle_orange_x >= LARGEUR_ECRAN) {
-        cercle_orange_x = -TAILLE_CERCLE; // Revenir à gauche de l'écran
-        delay_orange = rand() % 2000 + 1000; // Nouveau délai aléatoire
-    }
-}
-*/
-
-
 
 
 void setup(){
 
-    //srand(time(NULL));
-
-    /*bool flag_vert = false, flag_rose = false, flag_jaune = false;
-    int delay_vert = 0, delay_rose = 0, delay_orange = 0;*/
 
     loadImages();
 
@@ -278,13 +228,6 @@ void setup(){
 
         blit(image, buffer, 0, 0, 0, 0, image->w, image->h);
 
-        /*// délais aléatoire pour chaque client
-        delay_vert = rand() % 4000 + 2000;
-        delay_rose = rand() % 3000 + 1500;
-        delay_orange = rand() % 2000 + 1000;*/
-
-        //chargerimage(plat1, plat2, plat3);
-
         masked_blit(assiette, buffer, 0, 0, 455, 320, assiette->w, assiette->h);
 
         masked_blit(pate, buffer, 0, 0, 72, 255, pate->w, pate->h);
@@ -303,15 +246,25 @@ void setup(){
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
         dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
+
+
+
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
 
-        /*//chargerimage(plat1, plat2, plat3);
-        //recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, flag_rose, flag_vert, flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
-        dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
-        avancerclients(&delay_vert,&delay_rose,&delay_orange);
-        //revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);*/
+       /* if (plat1) {
+            destroy_bitmap(plat1);
+            plat1 = NULL;
+        }
+        if (plat2) {
+            destroy_bitmap(plat2);
+            plat2 = NULL;
+        }
+        if (plat3) {
+            destroy_bitmap(plat3);
+            plat3 = NULL;
+        }*/
 
-        // Déplacer et dessiner le cercle rouge (cuisinier 2)
+
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
             !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
             !isInsideRectangle3(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y)) {
@@ -397,14 +350,20 @@ void setup(){
 
         deplace(buffer, playerPos, playerPos1);
 
+
+
+
         // Rafraîchir l'écran
         rest(20);
+
     }
 
     // Attente de l'appui sur la touche Échap pour quitter
     while (!key[KEY_ESC]) {
         rest(100); // Attend 100 ms avant de vérifier à nouveau
     }
+
     cleanupp();
+
 
 }

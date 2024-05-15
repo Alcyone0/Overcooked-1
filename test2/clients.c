@@ -12,7 +12,7 @@
 
 // Variables de position des cercles
 int cercle_vert_x= 0;
-int cercle_vert_y = 150;
+int cercle_vert_y = 120;
 int cercle_rose_x= 0;
 int cercle_rose_y = 150;
 int cercle_orange_x= 0;
@@ -26,11 +26,18 @@ int jauge_xR = 370;
 int jauge_xV = 570;
 int jauge_xO= 170;
 
-void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMAP *plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune){
+BITMAP *client1;
 
+void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMAP *plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune){
+    client1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\client1.bmp", NULL);
+    if (!client1) {
+        allegro_message("Erreur H  lors du chargement de l'imageE.");
+        exit(EXIT_FAILURE);
+    }
+    masked_blit(client1, buffer, 0, 0, cercle_vert_x, cercle_vert_y, client1->w, client1->h );
 
 // clients
-    circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
+    //circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
     circlefill(buffer, cercle_rose_x, cercle_rose_y, TAILLE_CERCLE, makecol(255, 0, 255));
     circlefill(buffer, cercle_orange_x, cercle_orange_y, TAILLE_CERCLE, makecol(255, 255, 0));
 
@@ -66,6 +73,10 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
     if (temps_ecouleO < 30000) { // Si moins de 30 secondes se sont écoulées
         rectfill(buffer, jauge_xO, 190, jauge_xO + (temps_ecouleO / 500), 205,
                  makecol(255, 255, 0)); // Dessinez une partie de la jauge
+    }
+    if (client1) {
+        destroy_bitmap(client1);
+        client1 = NULL;
     }
 }
 

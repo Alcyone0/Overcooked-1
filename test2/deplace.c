@@ -10,30 +10,7 @@
 #include <stdlib.h>
 //#include "plat.h"
 //#include <stdio.h>
-
-
-//--------------------------------------------------CODE ESTELLE ------------------------------------------------
-
-// Taille et vitesse de déplacement des cercles
-#define TAILLE_CERCLE 30
-#define VITESSE_DEPLACEMENT 5
 #define MAX_INGREDIENTS 8
-//#define MAX_INGREDIENTS_RAMASSES 4
-
-
-
-//--------------------------------------------------------------------FIN CODE ESTELLE ---------------------------------------
-
-
-
-/*int ingredientsRamasses[MAX_INGREDIENTS_RAMASSES]; // Tableau pour les indices des ingrédients ramassés
-int nbIngredientsRamasses = 0; // Nombre d'ingrédients actuellement ramassés*/
-
-
-/*typedef struct {
-    int curseur_x;
-    int curseur_Y;
-} Position;*/
 
 typedef struct {
     int x_min;
@@ -52,11 +29,13 @@ typedef struct {
 
 Ingredient ingredients[MAX_INGREDIENTS];
 
+
 bool isInsideZone(int x, int y, Zone zone) {
     return (x >= zone.x_min && x <= zone.x_max && y >= zone.y_min && y <= zone.y_max);
 }
 
 BITMAP *champi1, *tomate1, *assiette1, *pate1, *jambon1, *mozza1, *piZ1, *olive1;
+
 
 void initIngredients() {
 
@@ -120,6 +99,7 @@ int table_y = 612;
 
 
 int ingredientRamasse = -1;
+int ingredientRamasse1 = -1;
 
 
 void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
@@ -127,11 +107,6 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
 
     Zone tableZone = {568, 609, 183, 219};
     Zone poubelleZone = {338, 379, 322, 360};
-
-    //--------------------------------------------------CODE ESTELLE----------------------------------------------------
-
-
-    //------------------------------------------------FIN CODE ESTELLE--------------------------------------------------
 
 
     assiette1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
@@ -143,6 +118,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     piZ1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\piz.bmp", NULL);
     mozza1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
 
+
     if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 ) {
         allegro_message("Erreur lors du chargement de l'image.");
         exit(EXIT_FAILURE);
@@ -151,70 +127,64 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     // Initialiser les ingrédients au début du jeu
     initIngredients();
 
-    //----------------------------------------------------------CODE ESTELLE----------------------------------------------------------------
-
-
-    //--------------------------------------------------FIN CODE ESTELLE-----------------------------------------------------------
-
-
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
 
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone)) && key[KEY_P]) {
+
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone)) && key[KEY_V]) {
             ingredients[i].picked = true;
-            ingredientRamasse = i;
+            ingredientRamasse1 = i;
             passe_sur_case1 = true;
         }
-        if (passe_sur_case1 && i == ingredientRamasse) {
+        if (passe_sur_case1 && i == ingredientRamasse1) {
 
             masked_blit(ingredients[i].image, buffer, 0, 0, playerPos1.curseur_x - 10, playerPos1.curseur_Y - 10,
                         ingredients[i].image->w, ingredients[i].image->h);
 
         }
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone )) && key[KEY_P]){
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone )) && key[KEY_V]){
             passe_sur_case1 = false;
             //ingredients[i].picked = false;
 
         }
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone )) && key[KEY_P]){
+        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone )) && key[KEY_V]){
             passe_sur_case1 = false;
             //ingredients[i].picked = false;
 
             masked_blit(ingredients[i].image, buffer, 0, 0, table_x, table_y,
                         ingredients[i].image->w, ingredients[i].image->h);
 
-
         }
 
-        // Autres vérifications de zone et d'actions pour playerPos1 ici...
     }
+
 
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
 
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone)) && key[KEY_P]) {
+        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone)) && key[KEY_L]) {
             ingredients[i].picked = true;
             ingredientRamasse = i;
             passe_sur_case = true;
         }
+
         if (passe_sur_case && i == ingredientRamasse) {
 
                 masked_blit(ingredients[i].image, buffer, 0, 0, playerPos.curseur_x - 10, playerPos.curseur_Y - 10,
                             ingredients[i].image->w, ingredients[i].image->h);
 
         }
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone )) && key[KEY_P]){
+        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone )) && key[KEY_M]){
             passe_sur_case = false;
-            //ingredients[i].picked = false;
+            ingredients[i].picked = false;
 
         }
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, tableZone )) && key[KEY_P]){
+        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, tableZone )) && key[KEY_M]){
             passe_sur_case = false;
-            //ingredients[i].picked = false;
+            ingredients[i].picked = false;
 
             masked_blit(ingredients[i].image, buffer, 0, 0, table_x, table_y,
                         ingredients[i].image->w, ingredients[i].image->h);
-
 
         }
 
@@ -228,12 +198,5 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
             ingredients[i].image = NULL;
         }
     }
-
-
-    //---------------------------------------------------------CODE ESTELLE---------------------------------------------------
-
-
-    //-----------------------------------------------------------FIN CODE ESTELLE----------------------------------------------------
-
 
 }
