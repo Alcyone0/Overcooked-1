@@ -131,65 +131,42 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
 
+    // Gestion du personnage 1 (playerPos)
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
-
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone)) && key[KEY_V]) {
-            ingredients[i].picked = true;
-            ingredientRamasse1 = i;
-            passe_sur_case1 = true;
-        }
-        if (passe_sur_case1 && i == ingredientRamasse1) {
-
-            masked_blit(ingredients[i].image, buffer, 0, 0, playerPos1.curseur_x - 10, playerPos1.curseur_Y - 10,
-                        ingredients[i].image->w, ingredients[i].image->h);
-
-        }
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone )) && key[KEY_V]){
-            passe_sur_case1 = false;
-            //ingredients[i].picked = false;
-
-        }
-        if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone )) && key[KEY_V]){
-            passe_sur_case1 = false;
-            //ingredients[i].picked = false;
-
-            masked_blit(ingredients[i].image, buffer, 0, 0, table_x, table_y,
-                        ingredients[i].image->w, ingredients[i].image->h);
-
-        }
-
-    }
-
-
-    for (int i = 0; i < MAX_INGREDIENTS; i++) {
-
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone)) && key[KEY_L]) {
+        if (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone) && key[KEY_L]) {
             ingredients[i].picked = true;
             ingredientRamasse = i;
             passe_sur_case = true;
         }
 
         if (passe_sur_case && i == ingredientRamasse) {
-
-                masked_blit(ingredients[i].image, buffer, 0, 0, playerPos.curseur_x - 10, playerPos.curseur_Y - 10,
-                            ingredients[i].image->w, ingredients[i].image->h);
-
+            masked_blit(ingredients[i].image, buffer, 0, 0, playerPos.curseur_x - 10, playerPos.curseur_Y - 10,
+                        ingredients[i].image->w, ingredients[i].image->h);
         }
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone )) && key[KEY_K]){
-            passe_sur_case = false;
-            ingredients[i].picked = false;
+    }
 
+    // Gestion du ramassage par le joueur 2 (playerPos1)
+    for (int i = 0; i < MAX_INGREDIENTS; i++) {
+        if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone) && key[KEY_V]) {
+            if (!ingredients[i].picked) {
+                ingredients[i].picked = true; // Ramasser l'ingrédient
+            }
         }
-        if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, tableZone )) && key[KEY_M]){
-            passe_sur_case = false;
-            ingredients[i].picked = false;
 
-            masked_blit(ingredients[i].image, buffer, 0, 0, table_x, table_y,
+        // Afficher l'ingrédient ramassé avec le curseur du joueur 2
+        if (ingredients[i].picked) {
+            masked_blit(ingredients[i].image, buffer, 0, 0, playerPos1.curseur_x - 10, playerPos1.curseur_Y - 10,
                         ingredients[i].image->w, ingredients[i].image->h);
 
+            // Déposer l'ingrédient sur la table lorsque le joueur 2 est sur la table et relâche la touche V
+            if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone) && !key[KEY_V]) {
+                ingredients[i].x = table_x; // Définir la position de l'ingrédient sur la table
+                ingredients[i].y = table_y;
+                ingredients[i].picked = false; // Déposer l'ingrédient
+            }
         }
-
     }
+
 
     blit(buffer,screen,0,0,0,0,800,600);
 
