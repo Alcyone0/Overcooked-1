@@ -10,6 +10,9 @@
 #include "plat.h"
 #include "clients.h"
 #include "saisirpseudo.h"
+#include <stdio.h>
+
+#define MAX_IMAGES 15
 
 // Dimensions de la fenêtre
 #define LARGEUR_ECRAN 800
@@ -40,131 +43,37 @@ int pos_jaune ;
 int pos_vert ;
 
 
-BITMAP *image, *mozza, *pate, *poivron, *olive, *fromage, *champi, *tomate, *piz, *creme, *bacon, *assiette, *cuisinier1, *cuisinier2 ;
-BITMAP *buffer;
-
-void cleanupp() {
-    // Libération de la mémoire pour les images chargées
-    if (image) {
-        destroy_bitmap(image);
-        image = NULL;
-    }
-
-    if (poivron){
-        destroy_bitmap(poivron);
-        poivron= NULL;
-    }
-
-    if (champi) {
-        destroy_bitmap(champi);
-        champi = NULL;
-    }
-
-
-    if (olive) {
-        destroy_bitmap(olive);
-        olive = NULL;
-    }
-
-    if (mozza) {
-        destroy_bitmap(mozza);
-        mozza = NULL;
-    }
-
-    if (pate) {
-        destroy_bitmap(pate);
-        pate = NULL;
-    }
-    if (assiette) {
-        destroy_bitmap(assiette);
-        assiette = NULL;
-    }
-    if (fromage) {
-        destroy_bitmap(fromage);
-        fromage = NULL;
-    }
-
-    if (tomate) {
-        destroy_bitmap(tomate);
-        tomate = NULL;
-    }
-
-    if (piz) {
-        destroy_bitmap(piz);
-        piz = NULL;
-    }
-
-    if (creme) {
-        destroy_bitmap(creme);
-        creme = NULL;
-    }
-    if (bacon) {
-        destroy_bitmap(bacon);
-        bacon = NULL;
-    }
-    if (cuisinier2) {
-        destroy_bitmap(cuisinier2);
-        cuisinier2 = NULL;
-    }
-
-    if (cuisinier1) {
-        destroy_bitmap(cuisinier1);
-        cuisinier1 = NULL;
-    }
-
-    if (buffer) {
-        destroy_bitmap(buffer);
-        buffer = NULL;
-    }
-    if (plat1) {
-        destroy_bitmap(plat1);
-        plat1 = NULL;
-    }
-    if (plat2) {
-        destroy_bitmap(plat2);
-        plat2 = NULL;
-    }
-    if (plat3) {
-        destroy_bitmap(plat3);
-        plat3 = NULL;
-    }
-
-
-
-
-
-}
-
-void loadImages() {
-    buffer = create_bitmap(LARGEUR_ECRAN, HAUTEUR_ECRAN);
-    if (!buffer) {
-        allegro_message("Erreur lors de la création du buffer.");
-        exit(EXIT_FAILURE);
-    }
-    image = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fondjeu_nv1.bmp", NULL);
-    assiette = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
-    mozza = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
-    pate = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\pate.bmp", NULL);
-    fromage = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fromage.bmp", NULL);
-    tomate = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomate.bmp", NULL);
-    piz = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\piz.bmp", NULL);
-    creme = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\creme.bmp", NULL);
-    bacon = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\jambon.bmp", NULL);
-    champi = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\champi.bmp", NULL);
-    olive = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\olive.bmp", NULL);
-    poivron = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\poivron.bmp", NULL);
-    cuisinier1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier1.bmp", NULL);
-    cuisinier2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier2.bmp", NULL);
-
-
-    if (!image || !poivron || !assiette || !champi || !olive|| !mozza || !pate || !fromage || !tomate || !piz || !creme || !bacon || !cuisinier1 || !cuisinier2) {
-        allegro_message("Erreur lors du chargement de l'image1.");
+void loadImagesFromFile(ImageInfo images[], int* numImages) {
+    FILE* file = fopen("nv1.txt", "r");
+    if (!file) {
+        allegro_message("Erreur lors de l'ouverture du fichier.");
         exit(EXIT_FAILURE);
     }
 
-    srand(time(NULL));
+    *numImages = 0;
+    while (fscanf(file, "%s %d %d", images[*numImages].path, &images[*numImages].x, &images[*numImages].y) == 3) {
+        (*numImages)++;
+        if (*numImages >= MAX_IMAGES) {
+            allegro_message("Trop d'images dans le fichier.");
+            break;
+        }
+    }
 
+    fclose(file);
 }
+void drawImages(BITMAP* buffer, ImageInfo images[], int numImages) {
+    for (int i = 0; i < numImages; ++i) {
+        BITMAP* bmp = load_bitmap(images[i].path, NULL);
+        if (!bmp) {
+            allegro_message("Erreur lors du chargement de l'image.");
+            continue;
+        }
+
+        masked_blit(bmp, buffer, 0, 0, images[i].x, images[i].y, bmp->w, bmp->h);
+        destroy_bitmap(bmp);
+    }
+}
+
 
 // Déclarations globales des variables de position
 int cercle_rouge_x = 200;
@@ -198,13 +107,51 @@ bool isInsideRectangle4(int x, int y) {
 
 
 void setup(){
+    srand(time(NULL));
 
+    ImageInfo images[MAX_IMAGES];
+    int numImages = 0;
 
-    loadImages();
+    loadImagesFromFile(images, &numImages);
+    BITMAP **loadedImages = malloc(numImages * sizeof(BITMAP *));
+    if (!loadedImages) {
+        allegro_message("Erreur d'allocation de mémoire pour les images.");
+        exit(EXIT_FAILURE);
+    }
+
+    // Charger les images et les stocker dans un tableau de pointeurs
+    for (int i = 0; i < numImages; ++i) {
+        loadedImages[i] = load_bitmap(images[i].path, NULL);
+        if (!loadedImages[i]) {
+            allegro_message("Erreur lors du chargement de l'image %d.", i);
+            exit(EXIT_FAILURE);
+        }
+    }
 
     install_keyboard();
 
     makecol(255, 0, 255);
+
+    BITMAP  *buffer;
+    buffer = create_bitmap(800, 600);
+    if (!buffer) {
+        allegro_message("Erreur lors de la création du buffer.");
+        exit(EXIT_FAILURE);
+    }
+    BITMAP *cuisinier1 = NULL;
+    BITMAP *cuisinier2 = NULL;
+
+
+
+    cuisinier1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier1.bmp", NULL);
+    cuisinier2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier2.bmp", NULL);
+
+    if (!cuisinier1 || !cuisinier2) {
+        allegro_message("Erreur lors du chargement de l'image1.");
+        exit(EXIT_FAILURE);
+    }
+
+
 
     clear_to_color(buffer, makecol(255, 255, 255)); // Effacer le buffer avec la couleur blanche
 
@@ -215,7 +162,7 @@ void setup(){
 
     chargerimage(&plat1, &plat2, &plat3);
 
-    //saisie_pseudos(pseudo1, pseudo2);
+    saisie_pseudos(pseudo1, pseudo2);
 
     Position playerPos;
     playerPos.curseur_x = cercle_rouge_x; // Par exemple, utilisez la position du cercle rouge
@@ -231,22 +178,11 @@ void setup(){
 
 
         clear_to_color(buffer, makecol(255, 255, 255));
+        //drawImages(buffer, images, numImages);
 
-        blit(image, buffer, 0, 0, 0, 0, image->w, image->h);
-
-        masked_blit(assiette, buffer, 0, 0, 455, 320, assiette->w, assiette->h);
-
-        masked_blit(pate, buffer, 0, 0, 72, 255, pate->w, pate->h);
-        masked_blit(piz, buffer, 0, 0, 72, 535, piz->w, piz->w);
-        masked_blit(mozza, buffer, 0, 0, 72, 470, mozza->w, mozza->h);
-        masked_blit(creme, buffer, 0, 0, 72, 400, creme->w, creme->h);
-        masked_blit(fromage, buffer, 0, 0, 72, 325, fromage->w, fromage->h);
-
-        masked_blit(tomate, buffer, 0, 0, 726, 566, tomate->w, tomate->w);
-        masked_blit(champi, buffer, 0, 0, 724, 293, champi->w, champi->h);
-        masked_blit(bacon, buffer, 0, 0, 724, 355, bacon->w, bacon->h);
-        masked_blit(olive, buffer, 0, 0, 724, 432, olive->w, olive->h);
-        masked_blit(poivron, buffer, 0, 0, 730, 498, poivron->w, poivron->h);
+        for (int i = 0; i < numImages; ++i) {
+            masked_blit(loadedImages[i], buffer, 0, 0, images[i].x, images[i].y, loadedImages[i]->w, loadedImages[i]->h);
+        }
 
         chargerimage(&plat1, &plat2, &plat3);
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
@@ -349,8 +285,16 @@ void setup(){
     while (!key[KEY_ESC]) {
         rest(100); // Attend 100 ms avant de vérifier à nouveau
     }
+    // Libérer la mémoire allouée pour les images
+    for (int i = 0; i < numImages; ++i) {
+        destroy_bitmap(loadedImages[i]);
+    }
+    free(loadedImages);
 
-    cleanupp();
+    // Libérer les ressources Allegro
+    destroy_bitmap(buffer);
+    destroy_bitmap(cuisinier1);
+    destroy_bitmap(cuisinier2);
 
 
 }

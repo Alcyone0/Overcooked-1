@@ -10,6 +10,7 @@
 #include <stdlib.h>
 //#include "plat.h"
 //#include <stdio.h>
+#include "nv1.h"
 #define MAX_INGREDIENTS 8
 
 typedef struct {

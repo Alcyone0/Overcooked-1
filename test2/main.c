@@ -1,6 +1,6 @@
 #include <allegro.h>
 #include "menu.h"
-#include  "setup.h"
+
 #include "musique.h"
 #include "initiaallegro.h"
 #include "nv1.h"
@@ -10,6 +10,8 @@ MenuState menuState = MAIN_MENU;
 
 
 int main() {
+
+
     // Initialisation d'Allegro
     initAllegro();
     show_mouse(screen);

@@ -5,6 +5,6 @@
 #ifndef TEST2_COMMANDES_H
 #define TEST2_COMMANDES_H
 
-
+void affichlevel();
 
 #endif //TEST2_COMMANDES_H

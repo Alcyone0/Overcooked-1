@@ -31,6 +31,8 @@ add_executable(test2 main.c
         clients.c
         clients.h
         saisirpseudo.c
-        saisirpseudo.h)
+        saisirpseudo.h
+        parametreson.c
+        parametreson.h)
 
 target_link_libraries(test2 -lmingw32 -lalleg44)
