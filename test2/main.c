@@ -31,7 +31,7 @@ int main() {
 
        if (menuState == GAME) {
 
-           nv1(); // Remplacez setupGame() par le nom de la fonction qui initialise votre jeu
+           nv1(buffer); // Remplacez setupGame() par le nom de la fonction qui initialise votre jeu
            // Sortir de la boucle après le jeu
            break;
        }

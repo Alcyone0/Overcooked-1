@@ -4,6 +4,6 @@
 
 #ifndef TEST2_NV1_H
 #define TEST2_NV1_H
-
-void nv1();
+#include <allegro.h>
+void nv1(BITMAP* buffer);
 #endif //TEST2_NV1_H

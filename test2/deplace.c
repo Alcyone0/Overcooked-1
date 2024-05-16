@@ -138,32 +138,29 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
             ingredientRamasse = i;
             passe_sur_case = true;
         }
+        if (!ingredients[i].picked) {
+            ingredients[i].picked = true; // Ramasser l'ingrédient
+        }
 
         if (passe_sur_case && i == ingredientRamasse) {
             masked_blit(ingredients[i].image, buffer, 0, 0, playerPos.curseur_x - 10, playerPos.curseur_Y - 10,
                         ingredients[i].image->w, ingredients[i].image->h);
         }
     }
-
-    // Gestion du ramassage par le joueur 2 (playerPos1)
+    // Gestion du personnage 1 (playerPos)
     for (int i = 0; i < MAX_INGREDIENTS; i++) {
-        if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone) && key[KEY_V]) {
-            if (!ingredients[i].picked) {
-                ingredients[i].picked = true; // Ramasser l'ingrédient
-            }
+        if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone) && key[KEY_C]) {
+            ingredients[i].picked = true;
+            ingredientRamasse1 = i;
+            passe_sur_case1 = true;
+        }
+        if (!ingredients[i].picked) {
+            ingredients[i].picked = true; // Ramasser l'ingrédient
         }
 
-        // Afficher l'ingrédient ramassé avec le curseur du joueur 2
-        if (ingredients[i].picked) {
+        if (passe_sur_case1 && i == ingredientRamasse1) {
             masked_blit(ingredients[i].image, buffer, 0, 0, playerPos1.curseur_x - 10, playerPos1.curseur_Y - 10,
                         ingredients[i].image->w, ingredients[i].image->h);
-
-            // Déposer l'ingrédient sur la table lorsque le joueur 2 est sur la table et relâche la touche V
-            if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone) && !key[KEY_V]) {
-                ingredients[i].x = table_x; // Définir la position de l'ingrédient sur la table
-                ingredients[i].y = table_y;
-                ingredients[i].picked = false; // Déposer l'ingrédient
-            }
         }
     }
 
