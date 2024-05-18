@@ -32,7 +32,7 @@ bool isInsideZone(int x, int y, Zone zone) {
     return (x >= zone.x_min && x <= zone.x_max && y >= zone.y_min && y <= zone.y_max);
 }
 
-BITMAP *champi1, *tomate1, *assiette1, *pate1, *jambon1, *mozza1, *piZ1, *olive1;
+BITMAP *champi1, *tomate1, *assiette1, *pate1, *jambon1, *mozza1, *piZ1, *olive1, *plats2;
 
 void initIngredients() {
     // Initialiser chaque ingrédient avec son image, sa position et sa zone de ramassage
@@ -101,10 +101,12 @@ int table_y = 612;
 
 int ingredientRamasse = -1;
 int ingredientRamasse1 = -1;
+bool afficherPlat2 = false;
+
 
 void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
-    Zone tableZone = {568, 609, 183, 219};
-    Zone poubelleZone = {338, 379, 322, 360};
+    Zone poubelleZone = {339, 494, 515, 565};
+    Zone tableZone = {338, 379, 322, 360};
 
     // Charger les images (ne pas les recharger à chaque appel)
     static bool images_loaded = false;
@@ -117,8 +119,8 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         olive1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\olive.bmp", NULL);
         piZ1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\piz.bmp", NULL);
         mozza1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
-
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1) {
+        plats2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2plat.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
@@ -189,12 +191,6 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         }
     }
 
-    // Afficher les ingrédients ramassés à côté des cuisiniers
-    /*for (int i = 0; i < numPickedIngredients; ++i) {
-        pickedIngredients[i].x = playerPos.curseur_x - 10 + i * 20; // Ajustez cet offset si nécessaire
-        pickedIngredients[i].y = playerPos.curseur_Y - 15; // Ajustez cet offset si nécessaire
-        draw_sprite(buffer, pickedIngredients[i].image, pickedIngredients[i].x, pickedIngredients[i].y);
-    }*/
 
     // Afficher les ingrédients ramassés à côté des cuisiniers
     if (ingredientRamasse != -1) {
@@ -225,14 +221,39 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
             if (ingredients[i].image == tomate1) foundTomato = true;
             if (ingredients[i].image == mozza1) foundMozza = true;
         }
+
     }
     victoire = foundPizza && foundTomato && foundMozza;
 
     if (victoire) {
-        textout_ex(buffer, font, "Victoire!", 400, 300, makecol(255, 255, 255), -1);
+
+        afficherPlat2 = true;
+            // Effacer les ingrédients de la zone de la poubelle
+            for (int i = 0; i < MAX_INGREDIENTS; ++i) {
+                if (ingredients[i].inPoubelle) {
+                    ingredients[i].inPoubelle = false;
+                    ingredients[i].picked = false;
+                    initIngredients();
+                }
+            }
+            // Réinitialiser la variable d'affichage du plat 2 pour qu'il ne soit pas dessiné à chaque itération suivante
+        //afficherPlat2 = false;
+    }
+
+    if (afficherPlat2){
+        draw_sprite(buffer, plats2, playerPos.curseur_x-10, playerPos.curseur_Y-10);
+
+    }
+    if (key[KEY_M]){
+        victoire = false;
+        afficherPlat2 = false;
+    }
+    if (!afficherPlat2){
+        draw_sprite(buffer, plats2, 568, 612);
     }
 
     blit(buffer, screen, 0, 0, 0, 0, 800, 600);
+
 
     // Note : Ne pas détruire les bitmaps à chaque itération
     // Les détruire uniquement à la fin du jeu ou lors du déchargement de ressources
