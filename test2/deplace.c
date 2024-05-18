@@ -3,7 +3,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "nv1.h"
+
 #define MAX_INGREDIENTS 8
+#define MAX_PICKED_INGREDIENTS 16
 
 typedef struct {
     int x_min;
@@ -18,9 +20,13 @@ typedef struct {
     int y;
     bool picked;
     Zone zone; // Zone pour la détection de ramassage
+    bool inPoubelle;
 } Ingredient;
 
 Ingredient ingredients[MAX_INGREDIENTS];
+Ingredient pickedIngredients[MAX_PICKED_INGREDIENTS];
+
+int numPickedIngredients = 0;
 
 bool isInsideZone(int x, int y, Zone zone) {
     return (x >= zone.x_min && x <= zone.x_max && y >= zone.y_min && y <= zone.y_max);
@@ -34,48 +40,56 @@ void initIngredients() {
     ingredients[0].x = 724;
     ingredients[0].y = 293;
     ingredients[0].picked = false;
+    ingredients[0].inPoubelle = false;
     ingredients[0].zone = (Zone){724, 760, 287, 324}; // Champignon
 
     ingredients[1].image = tomate1;
     ingredients[1].x = 726;
     ingredients[1].y = 566;
     ingredients[1].picked = false;
+    ingredients[1].inPoubelle = false;
     ingredients[1].zone = (Zone){726, 760, 568, 600}; // Tomate
 
     ingredients[2].image = assiette1;
     ingredients[2].x = 455;
     ingredients[2].y = 320;
     ingredients[2].picked = false;
+    ingredients[2].inPoubelle = false;
     ingredients[2].zone = (Zone){462, 494, 319, 356}; // Assiette
 
     ingredients[3].image = pate1;
     ingredients[3].x = 72;
     ingredients[3].y = 105;
     ingredients[3].picked = false;
+    ingredients[3].inPoubelle = false;
     ingredients[3].zone = (Zone){72, 105, 252, 287}; // Pâte
 
     ingredients[4].image = mozza1;
     ingredients[4].x = 72;
     ingredients[4].y = 420;
     ingredients[4].picked = false;
+    ingredients[4].inPoubelle = false;
     ingredients[4].zone = (Zone){72, 105, 463, 500}; // Mozza
 
     ingredients[5].image = olive1;
     ingredients[5].x = 724;
     ingredients[5].y = 432;
     ingredients[5].picked = false;
+    ingredients[5].inPoubelle = false;
     ingredients[5].zone = (Zone){725, 760, 428, 465}; // Olive
 
     ingredients[6].image = jambon1;
     ingredients[6].x = 724;
     ingredients[6].y = 355;
     ingredients[6].picked = false;
+    ingredients[6].inPoubelle = false;
     ingredients[6].zone = (Zone){725, 760, 357, 393}; // Jambon
 
     ingredients[7].image = piZ1;
     ingredients[7].x = 72;
     ingredients[7].y = 535;
     ingredients[7].picked = false;
+    ingredients[7].inPoubelle = false;
     ingredients[7].zone = (Zone){72, 105, 531, 569}; // Pizza
 }
 
@@ -111,6 +125,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
 
         // Initialiser les ingrédients au début du jeu
         initIngredients();
+
         images_loaded = true;
     }
 
@@ -129,9 +144,20 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
                 }
             }
         } else {
-            // Lâcher l'ingrédient
-            ingredients[ingredientRamasse].picked = false;
-            ingredientRamasse = -1;
+            // Déposer l'ingrédient uniquement dans une zone valide
+            if (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, tableZone) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone)) {
+                // Créer une copie temporaire de l'ingrédient ramassé
+                if (numPickedIngredients < MAX_PICKED_INGREDIENTS) {
+                    pickedIngredients[numPickedIngredients++] = ingredients[ingredientRamasse];
+                }
+                // Mettre à jour l'état si l'ingrédient est dans la poubelle
+                if (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelleZone)) {
+                    ingredients[ingredientRamasse].inPoubelle = true;
+                }
+                // Lâcher l'ingrédient
+                ingredients[ingredientRamasse].picked = false;
+                ingredientRamasse = -1;
+            }
         }
     }
 
@@ -146,11 +172,29 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
                 }
             }
         } else {
-            // Lâcher l'ingrédient
-            ingredients[ingredientRamasse1].picked = false;
-            ingredientRamasse1 = -1;
+            // Déposer l'ingrédient uniquement dans une zone valide
+            if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, tableZone) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone)) {
+                // Créer une copie temporaire de l'ingrédient ramassé
+                if (numPickedIngredients < MAX_PICKED_INGREDIENTS) {
+                    pickedIngredients[numPickedIngredients++] = ingredients[ingredientRamasse1];
+                }
+                // Mettre à jour l'état si l'ingrédient est dans la poubelle
+                if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelleZone)) {
+                    ingredients[ingredientRamasse1].inPoubelle = true;
+                }
+                // Lâcher l'ingrédient
+                ingredients[ingredientRamasse1].picked = false;
+                ingredientRamasse1 = -1;
+            }
         }
     }
+
+    // Afficher les ingrédients ramassés à côté des cuisiniers
+    /*for (int i = 0; i < numPickedIngredients; ++i) {
+        pickedIngredients[i].x = playerPos.curseur_x - 10 + i * 20; // Ajustez cet offset si nécessaire
+        pickedIngredients[i].y = playerPos.curseur_Y - 15; // Ajustez cet offset si nécessaire
+        draw_sprite(buffer, pickedIngredients[i].image, pickedIngredients[i].x, pickedIngredients[i].y);
+    }*/
 
     // Afficher les ingrédients ramassés à côté des cuisiniers
     if (ingredientRamasse != -1) {
@@ -172,8 +216,25 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         }
     }
 
+    // Vérifier la condition de victoire
+    bool victoire = true;
+    bool foundPizza = false, foundTomato = false, foundMozza = false;
+    for (int i = 0; i < MAX_INGREDIENTS; ++i) {
+        if (ingredients[i].inPoubelle) {
+            if (ingredients[i].image == piZ1) foundPizza = true;
+            if (ingredients[i].image == tomate1) foundTomato = true;
+            if (ingredients[i].image == mozza1) foundMozza = true;
+        }
+    }
+    victoire = foundPizza && foundTomato && foundMozza;
+
+    if (victoire) {
+        textout_ex(buffer, font, "Victoire!", 400, 300, makecol(255, 255, 255), -1);
+    }
+
     blit(buffer, screen, 0, 0, 0, 0, 800, 600);
 
     // Note : Ne pas détruire les bitmaps à chaque itération
     // Les détruire uniquement à la fin du jeu ou lors du déchargement de ressources
 }
+
