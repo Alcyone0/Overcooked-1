@@ -35,14 +35,14 @@ bool isInsideZone(int x, int y, Zone zone) {
 BITMAP *champi1, *tomate1, *assiette1, *pate1, *jambon1, *mozza1, *piZ1, *olive1, *plats2;
 
 int positionsInitiales[MAX_INGREDIENTS][2] = {
-        {724, 293}, // Position initiale du champignon
-        {726, 566}, // Position initiale de la tomate
+        {724, 287}, // Position initiale du champignon
+        {724, 565}, // Position initiale de la tomate
         {455, 320}, // Position initiale de l'assiette
-        {72, 105},  // Position initiale de la pâte
-        {72, 420},  // Position initiale de la mozza
-        {724, 432}, // Position initiale de l'olive
+        {77, 252},  // Position initiale de la pâte
+        {77, 458},  // Position initiale de la mozza
+        {724, 427}, // Position initiale de l'olive
         {724, 355}, // Position initiale du jambon
-        {72, 535}   // Position initiale de la pizza
+        {77, 532}   // Position initiale de la pizza
 };
 
 void initIngredients() {
@@ -104,13 +104,23 @@ void initIngredients() {
 
 }
 
-void resetIngredientsPosition() {
-    for (int i = 0; i < MAX_INGREDIENTS; ++i) {
-        ingredients[i].x = positionsInitiales[i][0];
-        ingredients[i].y = positionsInitiales[i][1];
-        ingredients[i].picked = false;
-        ingredients[i].inPoubelle = false;
-    }
+void resetIngredientsPIZZAPosition() {
+
+        ingredients[7].x = positionsInitiales[7][0];
+        ingredients[7].y = positionsInitiales[7][1];
+        ingredients[7].picked = false;
+        ingredients[7].inPoubelle = false;
+
+    ingredients[4].x = positionsInitiales[4][0];
+    ingredients[4].y = positionsInitiales[4][1];
+    ingredients[4].picked = false;
+    ingredients[4].inPoubelle = false;
+
+    ingredients[1].x = positionsInitiales[1][0];
+    ingredients[1].y = positionsInitiales[1][1];
+    ingredients[1].picked = false;
+    ingredients[1].inPoubelle = false;
+
 }
 
 bool passe_sur_case = false;
@@ -157,7 +167,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
 
-    if (key[KEY_P]) {
+    if (key[KEY_L]) {
         if (ingredientRamasse == -1 && !pizzaPicked && !plat2Picked) {
             for (int i = 0; i < MAX_INGREDIENTS; ++i) {
                 if (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, ingredients[i].zone) && !ingredients[i].picked) {
@@ -187,7 +197,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         }
     }
 
-    if (key[KEY_L]) {
+    if (key[KEY_V]) {
         if (ingredientRamasse1 == -1 && !pizzaPicked && !plat2Picked) {
             for (int i = 0; i < MAX_INGREDIENTS; ++i) {
                 if (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, ingredients[i].zone) && !ingredients[i].picked) {
@@ -220,21 +230,21 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     // Ajoutez cette condition pour vérifier si le plat 2 est sur la table et si la touche correspondante est enfoncée
 
         if ((plat2RamassePar == 0)&& isInsideZone(plat2_x, plat2_y, tableZone)) {
-            if (key[KEY_P]) {
-                plat2RamassePar = -1;
-                plat2_x = 620;
-                plat2_y = 188;
-                rest(5000);
-                initIngredients();
-
-            }// Le cuisinier 2 ramasse le plat
-        } if ((plat2RamassePar == 1)&& isInsideZone(plat2_x, plat2_y, tableZone)) {
             if (key[KEY_L]) {
                 plat2RamassePar = -1;
                 plat2_x = 620;
+                plat2_y = 188;
+                //rest(5000);
+                //initIngredients();
+
+            }// Le cuisinier 2 ramasse le plat
+        } if ((plat2RamassePar == 1)&& isInsideZone(plat2_x, plat2_y, tableZone)) {
+            if (key[KEY_V]) {
+                plat2RamassePar = -1;
+                plat2_x = 620;
                 plat2_y = 188;// Le cuisinier 1 ramasse le plat
-                rest(5000);
-                initIngredients();
+                //rest(5000);
+                //initIngredients();
             }
         }
 
@@ -271,7 +281,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
 
     if (victoire) {
         afficherPlat2 = true;
-        resetIngredientsPosition();
+        resetIngredientsPIZZAPosition();
         plat2_x = poubelleZone.x_min; // Mettre plats2 dans la zone poubelle
         plat2_y = poubelleZone.y_min;
     }
@@ -289,16 +299,19 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         draw_sprite(buffer, plats2, plat2_x, plat2_y);
     }
 
-    if (key[KEY_M]) {
-        victoire = false;
-        afficherPlat2 = false;
-        plat2Picked = false;
-        plat2RamassePar = -1;
-    }
-
     if (!afficherPlat2 && !plat2Picked) {
         draw_sprite(buffer, plats2, 568, 612);
     }
 
     blit(buffer, screen, 0, 0, 0, 0, 800, 600);
+    /*destroy_bitmap(assiette1);
+    destroy_bitmap(pate1);
+    destroy_bitmap(champi1);
+    destroy_bitmap(tomate1);
+    destroy_bitmap(jambon1);
+    destroy_bitmap(olive1);
+    destroy_bitmap(piZ1);
+    destroy_bitmap(mozza1);
+    destroy_bitmap(plats2);*/
+    //destroy_bitmap(buffer);
 }

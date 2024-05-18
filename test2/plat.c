@@ -7,30 +7,30 @@ BITMAP* choisir_image(BITMAP *plat1, BITMAP *plat2, BITMAP *plat3, int *taille) 
     int index_choisi = rand() % 3; // Choix aléatoire d'un index entre 0 et 2
     switch (index_choisi) {
         case 0:
-            *taille = 275/2;
+            *taille = 90/2;
             return plat1;
         case 1:
-            *taille = 275/2;
+            *taille = 90/2;
             return plat2;
         case 2:
-            *taille = 302/2;
+            *taille = 100/2;
             return plat3;
     }
 }
 void chargerimage(BITMAP **plat1,BITMAP **plat2,BITMAP **plat3) {
-    *plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat1.bmp", NULL);
+    *plat1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\platt1.bmp", NULL);
     if (!*plat1) {
         allegro_message("Erreur Alors du chargement de l'imageE.");
         exit(EXIT_FAILURE);
     }
 
-    *plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat2.bmp", NULL);
+    *plat2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\platt2.bmp", NULL);
     if (!*plat2) {
         allegro_message("Erreur Blors du chargement de l'imageE.");
         exit(EXIT_FAILURE);
     }
 
-    *plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3.bmp", NULL);
+    *plat3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\platt3.bmp", NULL);
     if (!*plat3) {
         allegro_message("Erreur Clors du chargement de l'imageE.");
         exit(EXIT_FAILURE);

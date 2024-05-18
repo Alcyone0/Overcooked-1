@@ -11,6 +11,9 @@ void initAllegro() {
     install_keyboard();
     install_mouse();
 
+    install_timer();
+
+
     // Initialisation du mode graphique
     set_color_depth(32);
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);

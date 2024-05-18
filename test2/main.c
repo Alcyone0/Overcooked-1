@@ -1,6 +1,7 @@
 #include <allegro.h>
 #include "menu.h"
 
+
 #include "musique.h"
 #include "initiaallegro.h"
 #include "nv1.h"
@@ -8,6 +9,16 @@
 
 MenuState menuState = MAIN_MENU;
 
+void draw_timer(int minutes, int seconds, int x, int y, int rect_width, int rect_height) {
+    // Rectangle bleu marine
+    rectfill(screen, x, y, x + rect_width, y + rect_height, makecol(0, 0, 128));
+
+    char timer_text[6];
+    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+
+    // Texte du timer
+    textout_ex(screen, font, timer_text, x + 10, y + 10, makecol(255, 255, 255), -1);
+}
 
 int main() {
 
@@ -16,6 +27,8 @@ int main() {
     initAllegro();
     show_mouse(screen);
     musique();
+
+
 
     // Chargement des images du menu
     Menu mainMenu;

@@ -87,11 +87,19 @@ void saisie_pseudos(char *pseudo1, char *pseudo2) {
     textout_ex(screen, font, pseudo1, 240, 340, makecol(0, 0, 0), -1);
     textout_ex(screen, font, pseudo2, 520, 340, makecol(0, 0, 0), -1);
 
-    // temps d'attente avant l'affichage de la partie de jeu (a changer ?)
+    // on peut entrer dans le jeu si on appuye sur la touche entrer
+    bool continuer = false;
+    while (!continuer) {
+        if (keypressed()) {
+            int touche = readkey();
+            if ((touche >> 8) == KEY_ENTER) {
+                continuer = true;
+            }
+        }
+        rest(10);
+    }
 
-        rest(5000);
-
-        destroy_bitmap(arriere_plan2);
+    destroy_bitmap(arriere_plan2);
 
 
 }
