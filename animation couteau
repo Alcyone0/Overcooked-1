@@ -1,0 +1,109 @@
+#include <allegro.h>
+#include <time.h>
+
+#define LARGEUR_ECRAN 800
+#define HAUTEUR_ECRAN 600
+#define MAX_ANGLE 50
+#define VITESSE 4.2
+#define JAUGE_LONGUEUR 85
+
+void anime_couteau(BITMAP *image, BITMAP* buffer) {
+    // Charger l'image du couteau
+    image = load_bitmap("C:\\Users\\marti\\OneDrive\\Documents\\Allegro\\untitled4\\COUTEAU.bmp", NULL);
+    if (!image) {
+        allegro_message("Impossible de charger l'image couteau");
+        return;
+    }
+
+    // Position de l'image au centre de l'écran
+    int image_x = (SCREEN_W - image->w) / 2;
+    int image_y = (SCREEN_H - image->h) / 2;
+
+    // Position initiale de la jauge
+    int jauge_x = image_x + 10; // Ajuster la position en fonction du couteau
+    int jauge_y = image_y - 20; // Au-dessus du couteau
+    int jauge_largeur = JAUGE_LONGUEUR; // Commence pleine
+    int jauge_hauteur = 15;
+    int jauge_couleur = makecol(0, 255, 0); // Couleur de la jauge (vert)
+    int jauge_temps_initial = 4500; // Temps initial de la jauge (en millisecondes)
+    int jauge_temps_restant = jauge_temps_initial; // Temps restant de la jauge
+
+    float angle = 0;
+    int rotation_direction = 1;
+
+    // Boucle de jeu
+    while (!key[KEY_ESC]) {// modifier logique du jeu
+        clear_bitmap(buffer);
+        // jauge
+        rectfill(buffer, jauge_x, jauge_y, jauge_x + jauge_largeur, jauge_y + jauge_hauteur, jauge_couleur);
+        // rotation du couteau
+        rotate_sprite(buffer, image, image_x, image_y, ftofix(angle));
+        blit(buffer, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+
+
+        angle += VITESSE * rotation_direction;
+
+        if (angle >= MAX_ANGLE) {
+            rotation_direction = -1;
+        }
+        else if (angle <= 0) {
+            rotation_direction = 1;
+        }
+
+        // Réduire le temps restant de la jauge si la touche M est pressée
+        if (key[KEY_K] ) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0; // Assurer que le temps ne devienne pas négatif
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+
+        // Réduire le temps restant de la jauge si la touche L est pressée
+        if (key[KEY_C]) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0;
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+        // Si la jauge est vide, fin
+        if (jauge_temps_restant <= 0) {
+            break;
+        }
+        vsync();
+    }
+
+}
+
+int main() {
+    // Initialisation Allegro
+    allegro_init();
+    install_keyboard();
+    set_color_depth(desktop_color_depth());
+    if (set_gfx_mode(GFX_AUTODETECT_WINDOWED, LARGEUR_ECRAN, HAUTEUR_ECRAN, 0, 0) != 0) {
+        allegro_message("Erreur lors de la configuration du mode graphique");
+        return 1;
+    }
+
+    // Création des bitmaps
+    BITMAP* image = NULL;
+    BITMAP* buffer = create_bitmap(LARGEUR_ECRAN, HAUTEUR_ECRAN);
+    if (!buffer) {
+        allegro_message("Impossible de créer le buffer");
+        return 1;
+    }
+
+    // Lancer l'animation du couteau
+    anime_couteau(image, buffer);
+
+    // Libération de la mémoire
+    destroy_bitmap(buffer);
+
+    // Fermeture Allegro
+    allegro_exit();
+    return 0;
+}
+END_OF_MAIN();
