@@ -43,12 +43,6 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
     masked_blit(client2, buffer, 0, 0, cercle_rose_x,cercle_rose_y, client2->w, client2->h);
     masked_blit(client3, buffer, 0, 0, cercle_orange_x,cercle_orange_y, client2->w, client2->h);
 
-    /*circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
-    circlefill(buffer, cercle_rose_x, cercle_rose_y, TAILLE_CERCLE, makecol(255, 0, 255));
-    circlefill(buffer, cercle_orange_x, cercle_orange_y, TAILLE_CERCLE, makecol(255, 255, 0));
-*/
-//Dessin des jauges de temps
-// Dessiner la jauge de temps boule rose
     if (cercle_rose_x >= 370) {
         temps_ecouleR += 20; // Comptez le temps écoulé en millisecondes (20 ms à chaque itération de la boucle)
         masked_blit(plat_rose, buffer, 0, 0, 375, 0, plat_rose->w, plat_rose->h);
