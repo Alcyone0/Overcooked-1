@@ -12,11 +12,11 @@
 
 // Variables de position des cercles
 int cercle_vert_x= 0;
-int cercle_vert_y = 150;
+int cercle_vert_y = 105;
 int cercle_rose_x= 0;
-int cercle_rose_y = 150;
+int cercle_rose_y = 105;
 int cercle_orange_x= 0;
-int cercle_orange_y = 150;
+int cercle_orange_y = 105;
 
 // variables pour la jauge de temps au dessus des clients
 int temps_ecouleR = 0;
@@ -28,21 +28,25 @@ int jauge_xO= 170;
 
 int scoretot = 0;
 
-bool touche_U_pressee = false;
-bool touche_I_pressee = false;
-bool touche_O_pressee = false;
-
 int obtenir_score() {
     return scoretot;
 }
 
 void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMAP *plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune){
 
+    BITMAP *client1 = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\clientnum1.bmp", NULL);
+    BITMAP *client2 = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\clientenum2.bmp", NULL);
+    BITMAP *client3 = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\clientnum3.bmp", NULL);
+
 // clients
-    circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
+    masked_blit(client1, buffer, 0, 0, cercle_vert_x,cercle_vert_y, client1->w, client1->h);
+    masked_blit(client2, buffer, 0, 0, cercle_rose_x,cercle_rose_y, client2->w, client2->h);
+    masked_blit(client3, buffer, 0, 0, cercle_orange_x,cercle_orange_y, client2->w, client2->h);
+
+    /*circlefill(buffer, cercle_vert_x, cercle_vert_y, TAILLE_CERCLE, makecol(0, 255, 0));
     circlefill(buffer, cercle_rose_x, cercle_rose_y, TAILLE_CERCLE, makecol(255, 0, 255));
     circlefill(buffer, cercle_orange_x, cercle_orange_y, TAILLE_CERCLE, makecol(255, 255, 0));
-
+*/
 //Dessin des jauges de temps
 // Dessiner la jauge de temps boule rose
     if (cercle_rose_x >= 370) {
@@ -51,7 +55,7 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
         *flag_rose = true;
     }
     if (temps_ecouleR < 30000) { // Si moins de 30 secondes se sont écoulées
-        rectfill(buffer, jauge_xR, 190, jauge_xR + (temps_ecouleR / 500), 205,
+        rectfill(buffer, jauge_xR, 165, jauge_xR + (temps_ecouleR / 500), 180,
                  makecol(255, 0, 255)); // Dessinez une partie de la jauge
     }
 
@@ -62,7 +66,7 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
         *flag_vert = true;
     }
     if (temps_ecouleV < 30000) { // Si moins de 30 secondes se sont écoulées
-        rectfill(buffer, jauge_xV, 190, jauge_xV + (temps_ecouleV / 500), 205,
+        rectfill(buffer, jauge_xV, 165, jauge_xV + (temps_ecouleV / 500), 180,
                  makecol(0, 255, 0)); // Dessinez une partie de la jauge
     }
 
@@ -73,9 +77,12 @@ void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMA
         *flag_jaune = true;
     }
     if (temps_ecouleO < 30000) { // Si moins de 30 secondes se sont écoulées
-        rectfill(buffer, jauge_xO, 190, jauge_xO + (temps_ecouleO / 500), 205,
+        rectfill(buffer, jauge_xO, 165, jauge_xO + (temps_ecouleO / 500), 180,
                  makecol(255, 255, 0)); // Dessinez une partie de la jauge
     }
+    destroy_bitmap(client1);
+    destroy_bitmap(client2);
+    destroy_bitmap(client3);
 }
 
 void avancerclients(int *delay_vert, int *delay_rose, int *delay_orange) {
