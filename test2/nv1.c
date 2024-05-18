@@ -38,6 +38,23 @@ int pos_vert ;
 BITMAP* images[256];
 char pseudo1[50], pseudo2[50];
 
+//Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
+bool isInsideRectangle2(int x, int y) {
+    return (x >= 338 && x <= 490 && y >= 220 && y <= 390);
+}
+// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
+bool isInsideRectangle3(int x, int y) {
+    return (x >= 260 && x <= 570 && y >= 500 && y <= 600);
+}
+// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
+bool isInsideRectangle1(int x, int y) {
+    return (x >= 328 && x <= 490 && y >= 220 && y <= 405);
+}
+// Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
+bool isInsideRectangle4(int x, int y) {
+    return (x >= 235 && x <= 570 && y >= 510 && y <= 600);
+}
+
 void load_images() {
     images[00] = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\sol.bmp", NULL);
     images[01] = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mur.bmp", NULL);
@@ -91,13 +108,6 @@ void unload_images() {
             destroy_bitmap(images[i]);
         }
     }
-}
-
-bool isWall(char** layout, int x, int y) {
-    if (layout[y][x] == '1') {
-        return true; // C'est un mur
-    }
-    return false; // Ce n'est pas un mur
 }
 
 
@@ -175,7 +185,7 @@ void nv1(BITMAP* buffer) {
     while (!key[KEY_ESC]) {
         clear_to_color(buffer, makecol(255, 255, 255));
         blit(fond, buffer, 0, 0, 0, 0, fond->w, fond->h);
-                // Affichage de la cuisine avec la disposition chargée
+        // Affichage de la cuisine avec la disposition chargée
         display_kitchen(kitchen_layout, 38, 35, buffer);
 
         chargerimage(&plat1, &plat2, &plat3);
@@ -184,27 +194,32 @@ void nv1(BITMAP* buffer) {
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
 
-        // Déplacement et affichage du cuisinier 2 (cercle rouge)
-        if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 && !isWall(kitchen_layout, (cercle_rouge_x - 105) / 38, (cercle_rouge_y - 180) / 35)) {
-            // Déplacement vers la gauche si ce n'est pas un mur
+        if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
+            !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
+            !isInsideRectangle3(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y)) {
             cercle_rouge_x -= VITESSE_DEPLACEMENT;
             directionX_cuisinier2 = -1; // Gauche
             playerPos.curseur_Y = cercle_rouge_y + 40;
             playerPos.curseur_x = cercle_rouge_x - 10;
-            // Autres instructions de déplacement...
         }
-        if (key[KEY_RIGHT] && cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 725 && !isWall(kitchen_layout, (cercle_rouge_x + VITESSE_DEPLACEMENT) / 38, (cercle_rouge_y - 180) / 35)) {
+        if (key[KEY_RIGHT] && cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 725 &&
+            !isInsideRectangle2(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y) &&
+            !isInsideRectangle3(cercle_rouge_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_rouge_y)) {
             cercle_rouge_x += VITESSE_DEPLACEMENT;
             directionX_cuisinier2 = 1; // Droite
             playerPos.curseur_Y = cercle_rouge_y + 40;
             playerPos.curseur_x = cercle_rouge_x + 50;
         }
-        if (key[KEY_UP] && cercle_rouge_y - VITESSE_DEPLACEMENT >= 180 && !isWall(kitchen_layout, (cercle_rouge_x - 105) / 38, (cercle_rouge_y - VITESSE_DEPLACEMENT - 180) / 35)) {
+        if (key[KEY_UP] && cercle_rouge_y - VITESSE_DEPLACEMENT >= 180 &&
+            !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT) &&
+            !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y - VITESSE_DEPLACEMENT)) {
             cercle_rouge_y -= VITESSE_DEPLACEMENT;
             playerPos.curseur_Y = cercle_rouge_y - 10;
             playerPos.curseur_x = cercle_rouge_x + 20;
         }
-        if (key[KEY_DOWN] && cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 && !isWall(kitchen_layout, (cercle_rouge_x - 105) / 38, (cercle_rouge_y + VITESSE_DEPLACEMENT - 180) / 35)) {
+        if (key[KEY_DOWN] && cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 &&
+            !isInsideRectangle2(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT) &&
+            !isInsideRectangle3(cercle_rouge_x, cercle_rouge_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT)) {
             cercle_rouge_y += VITESSE_DEPLACEMENT;
             playerPos.curseur_Y = cercle_rouge_y + 70;
             playerPos.curseur_x = cercle_rouge_x + 20;
@@ -220,24 +235,32 @@ void nv1(BITMAP* buffer) {
         }
 
         // Déplacer et dessiner le cercle bleu (cuisinier 1)
-        if (key[KEY_A] && cercle_bleu_x - VITESSE_DEPLACEMENT >= 105 ) {
+        if (key[KEY_A] && cercle_bleu_x - VITESSE_DEPLACEMENT >= 105 &&
+            !isInsideRectangle1(cercle_bleu_x - VITESSE_DEPLACEMENT, cercle_bleu_y) &&
+            !isInsideRectangle4(cercle_bleu_x - VITESSE_DEPLACEMENT, cercle_bleu_y)) {
             cercle_bleu_x -= VITESSE_DEPLACEMENT;
             directionX_cuisinier1 = -1; // Gauche
             playerPos1.curseur_Y= cercle_bleu_y + 40;
             playerPos1.curseur_x = cercle_bleu_x - 10;
         }
-        if (key[KEY_D] && cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 705 ) {
+        if (key[KEY_D] && cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 705 &&
+            !isInsideRectangle1(cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_bleu_y) &&
+            !isInsideRectangle4(cercle_bleu_x + TAILLE_CERCLE + VITESSE_DEPLACEMENT, cercle_bleu_y)) {
             cercle_bleu_x += VITESSE_DEPLACEMENT;
             directionX_cuisinier1 = 1; // Droite
             playerPos1.curseur_Y = cercle_bleu_y + 35;
             playerPos1.curseur_x = cercle_bleu_x + 70;
         }
-        if (key[KEY_W] && cercle_bleu_y - VITESSE_DEPLACEMENT >= 180 ) {
+        if (key[KEY_W] && cercle_bleu_y - VITESSE_DEPLACEMENT >= 180 &&
+            !isInsideRectangle1(cercle_bleu_x, cercle_bleu_y - VITESSE_DEPLACEMENT) &&
+            !isInsideRectangle4(cercle_bleu_x, cercle_bleu_y - VITESSE_DEPLACEMENT)) {
             cercle_bleu_y -= VITESSE_DEPLACEMENT;
             playerPos1.curseur_Y = cercle_bleu_y - 10;
             playerPos1.curseur_x = cercle_bleu_x + 20;
         }
-        if (key[KEY_S] && cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 ) {
+        if (key[KEY_S] && cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT <= 570 &&
+            !isInsideRectangle1(cercle_bleu_x, cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT) &&
+            !isInsideRectangle4(cercle_bleu_x, cercle_bleu_y + TAILLE_CERCLE + VITESSE_DEPLACEMENT)) {
             cercle_bleu_y += VITESSE_DEPLACEMENT;
             playerPos1.curseur_Y = cercle_bleu_y + 70;
             playerPos1.curseur_x = cercle_bleu_x + 20;
