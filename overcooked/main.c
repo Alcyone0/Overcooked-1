@@ -50,14 +50,14 @@ int main() {
         return -1;
     }
 
-    BITMAP *image = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\fond2 (1).bmp", NULL);
+    BITMAP *image = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\fond.bmp", NULL);
     if (!image) {
         allegro_message("Erreur lors du chargement de l'image1.");
         return -1;
     }
     install_keyboard();
 
-    BITMAP *poubelle = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\poubelle (1).bmp", NULL);
+    /*BITMAP *poubelle = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\poubelle (1).bmp", NULL);
     if (!poubelle) {
         allegro_message("Erreur lors du chargement de l'image poubelle.");
         return -1;
@@ -85,7 +85,7 @@ int main() {
     if (!plaque) {
         allegro_message("Erreur lors du chargement de l'imageE.");
         return -1;
-    }
+    }*/
 
     BITMAP *cuisinier1 = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\cuisinier1.bmp", NULL);
     if (!cuisinier1) {
@@ -122,10 +122,10 @@ int main() {
     // Boucle de jeu
     while (!key[KEY_ESC]) {
         blit(image, buffer, 0, 0, 0, 0, image->w, image->h);
-        blit(decoupe, buffer, 0, 0, 0, 240, decoupe->w, decoupe->h);
+        /*blit(decoupe, buffer, 0, 0, 0, 240, decoupe->w, decoupe->h);
         masked_blit(assiette, buffer, 0, 0, 290, 250, assiette->w, assiette->h);
         blit(mozza, buffer, 0, 0, 0, 520, mozza->w, mozza->h);
-        blit(poubelle, buffer, 0, 0, 545, 240, poubelle->w, poubelle->h);
+        blit(poubelle, buffer, 0, 0, 545, 240, poubelle->w, poubelle->h);*/
         rect(buffer, 0 , 320, 680, 520, makecol(0,0,0));
 
         chargerimage(&plat1, &plat2, &plat3);
@@ -135,10 +135,10 @@ int main() {
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
         afficher_score(buffer, obtenir_score());
 
-        if ((cercle_rouge_x > 277 && cercle_rouge_x < 360 && cercle_rouge_y > 320 && cercle_rouge_y < 360) || (key[KEY_P]) ){
+       /* if ((cercle_rouge_x > 277 && cercle_rouge_x < 360 && cercle_rouge_y > 320 && cercle_rouge_y < 360) || (key[KEY_P]) ){
             masked_blit(assiette, buffer, 0, 0, cercle_rouge_x, cercle_rouge_y, assiette->w, assiette->h);
             //cercle_rouge_x = assiette;
-        }
+        }*/
 
         // Déplacement du cercle rouge avec les flèches du clavier
         if (key[KEY_UP] && cercle_rouge_y > 340) cercle_rouge_y -= VITESSE_DEPLACEMENT;
@@ -171,11 +171,11 @@ int main() {
     destroy_bitmap(plat2);
     destroy_bitmap(plat3);
     destroy_bitmap(image);
-    destroy_bitmap(poubelle);
+    /*destroy_bitmap(poubelle);
     destroy_bitmap(decoupe);
     destroy_bitmap(assiette);
     destroy_bitmap(mozza);
-    destroy_bitmap(plaque);
+    destroy_bitmap(plaque);*/
     destroy_bitmap(buffer);
     destroy_bitmap(cuisinier1);
     destroy_bitmap(cuisinier2);
