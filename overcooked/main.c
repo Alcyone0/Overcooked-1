@@ -34,6 +34,7 @@ int pos_vert ;
 
 char pseudo1[50], pseudo2[50];
 
+
 int main() {
     allegro_init();
 
@@ -115,9 +116,10 @@ int main() {
     delay_rose = rand() % 3000 + 1500;
     delay_orange = rand() % 2000 + 1000;
 
-    chargerimage(&plat1, &plat2, &plat3);
+    //chargerimage(&plat1, &plat2, &plat3);
     // Saisie des pseudos
     saisie_pseudos(pseudo1, pseudo2);
+
 
     // Boucle de jeu
     while (!key[KEY_ESC]) {
@@ -128,12 +130,14 @@ int main() {
         blit(poubelle, buffer, 0, 0, 545, 240, poubelle->w, poubelle->h);*/
         rect(buffer, 0 , 320, 680, 520, makecol(0,0,0));
 
+        choisir_image(plat1,plat2,plat3,&taille),
         chargerimage(&plat1, &plat2, &plat3);
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
         dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
-        afficher_score(buffer, obtenir_score());
+        afficherscoretotal(buffer);
+        afficherscoredesjoueurs(buffer,pseudo1, pseudo2);
 
        /* if ((cercle_rouge_x > 277 && cercle_rouge_x < 360 && cercle_rouge_y > 320 && cercle_rouge_y < 360) || (key[KEY_P]) ){
             masked_blit(assiette, buffer, 0, 0, cercle_rouge_x, cercle_rouge_y, assiette->w, assiette->h);
