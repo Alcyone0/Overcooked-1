@@ -9,7 +9,7 @@
 
 MenuState menuState = MAIN_MENU;
 
-void draw_timer(int minutes, int seconds, int x, int y, int rect_width, int rect_height) {
+/*void draw_timer(int minutes, int seconds, int x, int y, int rect_width, int rect_height) {
     // Rectangle bleu marine
     rectfill(screen, x, y, x + rect_width, y + rect_height, makecol(0, 0, 128));
 
@@ -18,7 +18,7 @@ void draw_timer(int minutes, int seconds, int x, int y, int rect_width, int rect
 
     // Texte du timer
     textout_ex(screen, font, timer_text, x + 10, y + 10, makecol(255, 255, 255), -1);
-}
+}*/
 
 int main() {
 

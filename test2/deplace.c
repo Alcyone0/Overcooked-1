@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "nv1.h"
+#include "timer.h"
 
 #define MAX_INGREDIENTS 8
 #define MAX_PICKED_INGREDIENTS 16
@@ -209,11 +210,11 @@ int plat2RamassePar = -1;
 int plat3RamassePar = -1;
 
 void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
-    Zone poubelleZone = {339, 494, 515, 565}; // table
-    Zone tableZone1 = {193, 231, 182, 216}; // poubelle
-    Zone tableZone2 = {420, 458, 181, 249}; // poubelle
-    Zone tableZone3 = {609, 648, 181, 216}; // poubelle
-    Zone poubelZone = {338, 379, 322, 360};
+    Zone poubelleZone = {339, 494, 515, 565}; // table pour faire commandes
+    Zone tableZone1 = {193, 231, 182, 216}; //table 1 pour deposer commmandes
+    Zone tableZone2 = {420, 458, 181, 249}; //table 2 pour desposé comandes
+    Zone tableZone3 = {609, 648, 181, 216}; // table 3 pouor depose commandes
+    Zone poubelZone = {338, 379, 322, 360}; //poubelle
 
     static bool images_loaded = false;
     if (!images_loaded) {
@@ -225,8 +226,8 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         olive1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\olive.bmp", NULL);
         piZ1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\piz.bmp", NULL);
         mozza1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\mozza.bmp", NULL);
-        plats2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2plat.bmp", NULL);
-        plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1plat.bmp", NULL);
+        plats2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2platsb.bmp", NULL);
+        plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
         if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3) {
             allegro_message("Erreur lors du chargement de l'image.");
@@ -317,6 +318,13 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
             plat3RamassePar = -1;
         }
     }
+    if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelZone )) && key[KEY_L]){
+        ingredientRamasse = -1;
+    }
+    if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelZone )) && key[KEY_V]){
+        ingredientRamasse1 = -1;
+    }
+
 
     for (int i = 0; i < MAX_INGREDIENTS; ++i) {
         if (ingredients[i].picked) {
@@ -365,6 +373,12 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plat2_x = poubelleZone.x_min;
         plat2_y = poubelleZone.y_min;
     }
+    if (victoire3) {
+        afficherPlat3 = true;
+        resetIngredientsPIZZA3Position();
+        plat3_x = poubelleZone.x_min;
+        plat3_y = poubelleZone.y_min;
+    }
 
     if (afficherPlat1 && !plat1Picked) {
         draw_sprite(buffer, plats1, plat1_x, plat1_y);
@@ -382,7 +396,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
                     plat1RamassePar = -1;
                 }
             }
-        } else if (plat1RamassePar == 1) {
+        }if (plat1RamassePar == 1) {
             plat1_x = playerPos1.curseur_x - 10;
             plat1_y = playerPos1.curseur_Y - 15;
             if (plat1Picked && plat1RamassePar == 1) {
@@ -399,16 +413,8 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         draw_sprite(buffer, plats1, plat1_x, plat1_y);
     }
 
-    if ((isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, poubelZone )) && key[KEY_L]){
-        ingredientRamasse = -1;
-    }
 
-    if (victoire3) {
-        afficherPlat3 = true;
-        resetIngredientsPIZZA3Position();
-        plat3_x = poubelleZone.x_min;
-        plat3_y = poubelleZone.y_min;
-    }
+
 
     if (afficherPlat3 && !plat3Picked) {
         draw_sprite(buffer, plats3, plat3_x, plat3_y);
@@ -444,9 +450,7 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     }
 
 
-    if ((isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, poubelZone )) && key[KEY_V]){
-        ingredientRamasse1 = -1;
-    }
+
 
     if (afficherPlat2 && !plat2Picked) {
         draw_sprite(buffer, plats2, plat2_x, plat2_y);

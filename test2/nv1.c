@@ -7,6 +7,7 @@
 #include "plat.h"
 #include "clients.h"
 #include "score.h"
+#include "timer.h"
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 7
@@ -54,6 +55,47 @@ bool isInsideRectangle1(int x, int y) {
 // Fonction pour vérifier si une position est à l'intérieur du rectangle interdit
 bool isInsideRectangle4(int x, int y) {
     return (x >= 235 && x <= 570 && y >= 510 && y <= 600);
+}
+
+volatile int seconds_left = 0;
+
+void decrement_timer() {
+    if (seconds_left > 0) {
+        seconds_left--;
+    }
+}
+
+void draw_timer(int seconds_left, int x, int y, int rect_width, int rect_height) {
+
+
+    // Dessin du rectangle bleu marine (tu peux changer la couleur ici si besoin)
+    rectfill(screen, x, y, x + rect_width, y + rect_height, makecol(0, 0, 128));
+
+    int minutes = seconds_left / 60;
+    int seconds = seconds_left % 60;
+
+    char timer_text[6];
+    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+
+    textout_ex(screen, font, timer_text, x + 10, y + 10, makecol(255, 255, 255), -1);
+}
+
+void run_timer(int initial_minutes) {
+    seconds_left = initial_minutes * 60;
+
+    install_int(decrement_timer, 1000);
+
+    while (!keypressed() && seconds_left > 0) {
+        //draw_timer(seconds_left, 700, 0, 100, 25);
+        // Double buffering pour éviter le scintillement - tu peux peut-être l'enlever je suis pas sûre que ça fonctionne
+        //acquire_screen();
+        //release_screen();
+    }
+
+    if (seconds_left == 0) {
+        allegro_message("Fin du temps imparti");
+    }
+
 }
 
 void load_images() {
@@ -183,7 +225,9 @@ void nv1(BITMAP* buffer) {
     playerPos1.curseur_x = cercle_bleu_x; // Par exemple, utilisez la position du cercle rouge
     playerPos1.curseur_Y = cercle_bleu_y;
 
+    run_timer(3);
     while (!key[KEY_ESC]) {
+
         clear_to_color(buffer, makecol(255, 255, 255));
         blit(fond, buffer, 0, 0, 0, 0, fond->w, fond->h);
         // Affichage de la cuisine avec la disposition chargée
@@ -279,6 +323,8 @@ void nv1(BITMAP* buffer) {
 
         deplace(buffer, playerPos, playerPos1);
 
+        //run_timer(3);
+        draw_timer(seconds_left, 700, 0, 100, 25);
         rest(50);
     }
 

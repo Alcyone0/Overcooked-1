@@ -35,6 +35,8 @@ add_executable(test2 main.c
         parametreson.c
         parametreson.h
         score.c
-        score.h)
+        score.h
+        timer.c
+        timer.h)
 
 target_link_libraries(test2 -lmingw32 -lalleg44)

@@ -5,6 +5,10 @@
 
 #include <allegro.h>
 #include "score.h"
+#include "timer.h"
+#include <stdio.h>
+
+
 
 void afficher_score(BITMAP *buffer, int score) {
     // Couleur du texte (blanc)
@@ -16,4 +20,5 @@ void afficher_score(BITMAP *buffer, int score) {
 
     // Affichage du texte
     textprintf_ex(buffer, font, text_x, text_y, text_color, -1, "Score: %d", score);
+
 }
