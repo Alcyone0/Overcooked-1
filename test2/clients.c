@@ -175,7 +175,7 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
 // boule verte
     if (cercle_vert_x > LARGEUR_ECRAN) {
         cercle_vert_x = -TAILLE_CERCLE; // Réinitialisation de la position x
-        cercle_vert_y = 150;
+        cercle_vert_y = 105;
         *delay_vert = rand() % 4000 + 2000;
     }
 
@@ -189,7 +189,7 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
 //boule orange
     if (cercle_orange_x > LARGEUR_ECRAN) {
         cercle_orange_x = -TAILLE_CERCLE; // Réinitialisation de la position x
-        cercle_orange_y = 150;
+        cercle_orange_y = 105;
         *delay_orange = rand() % 2000 + 1000;
     }
 

@@ -6,6 +6,7 @@
 #include "deplace.h"
 #include "plat.h"
 #include "clients.h"
+#include "score.h"
 // Taille et vitesse de déplacement des cercles
 #define TAILLE_CERCLE 30
 #define VITESSE_DEPLACEMENT 7
@@ -188,11 +189,13 @@ void nv1(BITMAP* buffer) {
         // Affichage de la cuisine avec la disposition chargée
         display_kitchen(kitchen_layout, 38, 35, buffer);
 
+
         chargerimage(&plat1, &plat2, &plat3);
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
         dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
+        afficher_score(buffer, obtenir_score());
 
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
             !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&

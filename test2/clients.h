@@ -12,5 +12,5 @@
 void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMAP *plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune);
 void avancerclients(int *delay_vert, int *delay_rose, int *delay_orange);
 void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *delay_vert, int *delay_rose, int *delay_orange);
-
+int obtenir_score();
 #endif //TEST2_CLIENTS_H
