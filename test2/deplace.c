@@ -288,7 +288,8 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plats2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2platsb.bmp", NULL);
         plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3) {
+        tomate2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomat.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3 || !tomate2) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
@@ -301,6 +302,20 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
 
+    bool tomatecoupe = false;
+    if (key[KEY_C] || key[KEY_K]){
+        tomatecoupe = true;
+    }
+    if (ingredients[1].picked) {
+        if (tomatecoupe) {
+            if (key[KEY_C]) {
+                draw_sprite(buffer, tomate2, playerPos1.curseur_x, playerPos1.curseur_Y);
+            }
+            if (key[KEY_K]) {
+                draw_sprite(buffer, tomate2, playerPos.curseur_x, playerPos.curseur_Y);
+            }
+        }
+    }
     if (key[KEY_L]) {
         if (ingredientRamasse == -1) {
             for (int i = 0; i < MAX_INGREDIENTS; ++i) {
@@ -579,7 +594,8 @@ void deplace2(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plats2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2platsb.bmp", NULL);
         plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3) {
+        tomate2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomat.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !tomate2 || !plats3) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
@@ -590,6 +606,21 @@ void deplace2(BITMAP *buffer, Position playerPos, Position playerPos1) {
 
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
+
+    bool tomatecoupe = false;
+    if (key[KEY_C] || key[KEY_K]){
+        tomatecoupe = true;
+    }
+    if (ingredients[1].picked) {
+        if (tomatecoupe) {
+            if (key[KEY_C]) {
+                draw_sprite(buffer, tomate2, playerPos1.curseur_x, playerPos1.curseur_Y);
+            }
+            if (key[KEY_K]) {
+                draw_sprite(buffer, tomate2, playerPos.curseur_x, playerPos.curseur_Y);
+            }
+        }
+    }
 
     if (key[KEY_L]) {
         if (ingredientRamasse == -1) {
@@ -878,17 +909,28 @@ void deplace3(BITMAP *buffer, Position playerPos, Position playerPos1) {
         initIngredients();
         images_loaded = true;
     }
+    /*resetIngredientsPIZZA1Position();
+    resetIngredientsPIZZA2Position();
+    resetIngredientsPIZZA3Position();*/
 
     circlefill(buffer, playerPos.curseur_x, playerPos.curseur_Y, 7, (255));
     circlefill(buffer, playerPos1.curseur_x, playerPos1.curseur_Y, 7, (12));
     bool tomatecoupe = false;
-    if (key[KEY_C]){
+    if (key[KEY_C] || key[KEY_K]){
         tomatecoupe = true;
     }
-    if (tomatecoupe){
-        tomate2 = tomate1;
 
-    }
+        if (ingredients[1].picked) {
+            if (tomatecoupe) {
+                if (key[KEY_C]) {
+                    draw_sprite(buffer, tomate2, playerPos1.curseur_x, playerPos1.curseur_Y);
+                }
+                if (key[KEY_K]) {
+                    draw_sprite(buffer, tomate2, playerPos.curseur_x, playerPos.curseur_Y);
+                }
+            }
+        }
+
 
     if (key[KEY_L]) {
         if (ingredientRamasse == -1) {

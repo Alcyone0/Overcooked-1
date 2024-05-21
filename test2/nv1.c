@@ -239,6 +239,7 @@ void unload_images() {
 bool finnv3;
 
 void nv3(BITMAP* buffer) {
+    finnv3 = false;
     install_keyboard();
 
     // délais aléatoire pour chaque client
@@ -514,7 +515,7 @@ void nv3(BITMAP* buffer) {
         // Nettoyage de la mémoire allouée
         show_end_screen();
         rest(5000);
-        finnv3 = false;
+        //
         return;
 
     }
@@ -573,8 +574,16 @@ void nv2(BITMAP* buffer) {
     }
     fclose(layout_file);
 
+
     BITMAP *cuisinier1 = NULL;
     BITMAP *cuisinier2 = NULL;
+    BITMAP *couteau;
+    // Charger l'image du couteau
+    couteau = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\couteau.bmp", NULL);
+    if (!couteau) {
+        allegro_message("Impossible de charger l'image couteau");
+        return;
+    }
 
     BITMAP *fond = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fond.bmp", NULL);
     if (!fond) {
@@ -589,6 +598,22 @@ void nv2(BITMAP* buffer) {
         allegro_message("Erreur lors du chargement de l'image1.");
         exit(EXIT_FAILURE);
     }
+    // Position de l'image au centre de l'écran
+    int image_x = 570;
+    int image_y = 370;
+
+// Position initiale de la jauge
+    int jauge_x = image_x + 10; // Ajuster la position en fonction du couteau
+    int jauge_y = image_y - 20; // Au-dessus du couteau
+    int jauge_largeur = JAUGE_LONGUEUR; // Commence pleine
+    int jauge_hauteur = 15;
+    int jauge_couleur = makecol(0, 255, 0); // Couleur de la jauge (vert)
+    int jauge_temps_initial = 4500; // Temps initial de la jauge (en millisecondes)
+    int jauge_temps_restant = jauge_temps_initial; // Temps restant de la jauge
+
+    float angle = 0;
+    int rotation_direction = 1;
+
 
     clear_to_color(buffer, makecol(255, 255, 255)); // Effacer le buffer avec la couleur blanche
 
@@ -614,6 +639,17 @@ void nv2(BITMAP* buffer) {
         blit(fond, buffer, 0, 0, 0, 0, fond->w, fond->h);
         // Affichage de la cuisine avec la disposition chargée
         displaycuisine(cuisine_layout, 38, 35, buffer);
+        rectfill(buffer, jauge_x, jauge_y, jauge_x + jauge_largeur, jauge_y + jauge_hauteur, jauge_couleur);
+        // rotation du couteau
+        rotate_sprite(buffer, couteau, image_x, image_y, ftofix(angle));
+
+        angle += VITESSE * rotation_direction;
+
+        if (angle >= MAX_ANGLE) {
+            rotation_direction = -1;
+        } else if (angle <= 0) {
+            rotation_direction = 1;
+        }
 
 
         chargerimage(&plat1, &plat2, &plat3);
@@ -621,9 +657,36 @@ void nv2(BITMAP* buffer) {
         dessinerclients(buffer, plat_rose, plat_vert, plat_jaune,&flag_rose, &flag_vert, &flag_jaune);
         avancerclients(&delay_vert,&delay_rose,&delay_orange);
         revenirclients(&flag_vert, &flag_rose, &flag_jaune,&delay_vert,&delay_rose,&delay_orange);
+
         //afficher_score(buffer, obtenir_score());
         afficherscoretotal(buffer);
         afficherscoredesjoueurs(buffer, pseudo1,pseudo2);
+
+        // Réduire le temps restant de la jauge si la touche M est pressée
+        if (key[KEY_K]) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0; // Assurer que le temps ne devienne pas négatif
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+
+        // Réduire le temps restant de la jauge si la touche L est pressée
+        if (key[KEY_C]) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0;
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+        if (jauge_temps_restant <= 0) {
+            jauge_temps_restant = 4500;
+            jauge_largeur = JAUGE_LONGUEUR;
+
+        }
+
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
             !isInsideRectangle5(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
             !isInsideRectangle6(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
@@ -796,6 +859,22 @@ void nv1(BITMAP* buffer) {
     }
     fclose(layout_file);
 
+    // Position de l'image au centre de l'écran
+    int image_x = 505;
+    int image_y = 530;
+
+// Position initiale de la jauge
+    int jauge_x = image_x + 10; // Ajuster la position en fonction du couteau
+    int jauge_y = image_y - 20; // Au-dessus du couteau
+    int jauge_largeur = JAUGE_LONGUEUR; // Commence pleine
+    int jauge_hauteur = 15;
+    int jauge_couleur = makecol(0, 255, 0); // Couleur de la jauge (vert)
+    int jauge_temps_initial = 4500; // Temps initial de la jauge (en millisecondes)
+    int jauge_temps_restant = jauge_temps_initial; // Temps restant de la jauge
+
+    float angle = 0;
+    int rotation_direction = 1;
+
     buffer = create_bitmap(800, 600);
     if (!buffer) {
         allegro_message("Erreur lors de la création du buffer.");
@@ -803,11 +882,18 @@ void nv1(BITMAP* buffer) {
     }
     BITMAP *cuisinier1 = NULL;
     BITMAP *cuisinier2 = NULL;
+    BITMAP *couteau;
 
     BITMAP *fond = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\fond.bmp", NULL);
     if (!fond) {
         fprintf(stderr, "Erreur lors du chargement de l'image fondjeu_nv1.bmp\n");
         // Gérer l'erreur ici (par exemple, retourner ou terminer le programme)
+    }
+    // Charger l'image du couteau
+    couteau = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\couteau.bmp", NULL);
+    if (!couteau) {
+        allegro_message("Impossible de charger l'image couteau");
+        return;
     }
 
     cuisinier1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\cuisinier1.bmp", NULL);
@@ -830,17 +916,22 @@ void nv1(BITMAP* buffer) {
 
     run_timer(1);
     while (!key[KEY_ESC]&&(!finnv1)) {
-        // Attente de l'appui sur la touche Échap pour quitter
-        if (key[KEY_N]) {
-
-            rest(100); // Attend 100 ms avant de vérifier à nouveau
-        }
 
         clear_to_color(buffer, makecol(255, 255, 255));
         blit(fond, buffer, 0, 0, 0, 0, fond->w, fond->h);
         // Affichage de la cuisine avec la disposition chargée
         displaycuisine(cuisine_layout, 38, 35, buffer);
+        rectfill(buffer, jauge_x, jauge_y, jauge_x + jauge_largeur, jauge_y + jauge_hauteur, jauge_couleur);
+        // rotation du couteau
+        rotate_sprite(buffer, couteau, image_x, image_y, ftofix(angle));
 
+        angle += VITESSE * rotation_direction;
+
+        if (angle >= MAX_ANGLE) {
+            rotation_direction = -1;
+        } else if (angle <= 0) {
+            rotation_direction = 1;
+        }
 
         chargerimage(&plat1, &plat2, &plat3);
         recupererimage(plat1, plat2, plat3, &plat_rose, &plat_vert, &plat_jaune, &flag_rose, &flag_vert, &flag_jaune,&pos_rose,  &pos_vert, &pos_jaune);
@@ -851,6 +942,31 @@ void nv1(BITMAP* buffer) {
 
         afficherscoretotal(buffer);
         afficherscoredesjoueurs(buffer, pseudo1, pseudo2);
+
+        // Réduire le temps restant de la jauge si la touche M est pressée
+        if (key[KEY_K]) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0; // Assurer que le temps ne devienne pas négatif
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+
+        // Réduire le temps restant de la jauge si la touche L est pressée
+        if (key[KEY_C]) {
+            jauge_temps_restant -= 100; // Réduire le temps de 100 ms
+            if (jauge_temps_restant < 0) {
+                jauge_temps_restant = 0;
+            }
+            // Mettre à jour la largeur de la jauge en fonction du temps restant
+            jauge_largeur = (jauge_temps_restant * JAUGE_LONGUEUR) / jauge_temps_initial;
+        }
+        if (jauge_temps_restant <= 0) {
+            jauge_temps_restant = 4500;
+            jauge_largeur = JAUGE_LONGUEUR;
+
+        }
 
         if (key[KEY_LEFT] && cercle_rouge_x - VITESSE_DEPLACEMENT >= 105 &&
             !isInsideRectangle2(cercle_rouge_x - VITESSE_DEPLACEMENT, cercle_rouge_y) &&
