@@ -2,6 +2,7 @@
 #include <allegro.h> // Ajout de l'en-tête Allegro
 #include <stdbool.h>
 #include "setup.h"
+#include "nv1.h"
 
 
 
@@ -93,6 +94,25 @@ void showMenulevel (BITMAP *buffer, Menulvl *lvl){
     // Afficher le buffer sur l'écran
     blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 }
+bool isMouseOverRegles(int mouseX, int mouseY) {
+    return isMouseOverButton(mouseX, mouseY, 636, 534, 105, 42);
+}
+
+void showSettings(BITMAP *buffer, MenuS *set) {
+    clear_to_color(buffer, makecol(0, 0, 0)); // Effacer le contenu précédent du buffer
+
+    set->regles = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\Regles_du_jeu.bmp", NULL);
+    set->Bouton_return = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\menu\\return.bmp",NULL);
+    set->Bouton_return2 =load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\menu\\Return2.bmp",NULL);
+    if (!set->regles || !set->Bouton_return ||!set->Bouton_return2) {
+        allegro_message("Erreur : chargement de l'image des règles ou retours.");
+        exit(EXIT_FAILURE);
+    }
+    draw_sprite(buffer, set->regles, 0, 0);
+    drawButton(buffer, set->Bouton_return, set->Bouton_return2, 636, 534,105,32);
+    blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+}
+
 
 // Fonction pour vérifier si la souris est sur un bouton du menu principal
 bool isMouseOverMainMenuButton(int mouseX, int mouseY, int buttonNumber) {
@@ -143,7 +163,7 @@ void handleMenuLogic() {
                             menuState = LEVEL_MENU;
                             break;
                         case 3:
-                            allegro_message("Settings button clicked");
+                            menuState = SETTINGS;
                             break;
                         case 4:
                             exit(EXIT_SUCCESS);
@@ -154,7 +174,6 @@ void handleMenuLogic() {
             }
         }
     }
-        // Logique du menu de niveau
     else if (menuState == LEVEL_MENU) {
         if (mouse_b & 1) {
             // Gestion de la souris pour le menu de niveau
@@ -163,12 +182,15 @@ void handleMenuLogic() {
                     switch (i) {
                         case 1:
                             allegro_message("Level 1 selected");
+                            nv1(buffer);
                             break;
                         case 2:
                             allegro_message("Level 2 selected");
+                            nv2(buffer);
                             break;
                         case 3:
                             allegro_message("Level 3 selected");
+                            nv3(buffer);
                             break;
                         case 4:
                             menuState = MAIN_MENU;
@@ -178,8 +200,21 @@ void handleMenuLogic() {
                 }
             }
         }
+    } else if (menuState == SETTINGS) {
+        if (mouse_b & 1) {
+            // Gestion de la souris pour le menu de niveau
+            for (int i = 1; i <= 4; i++) {
+                if (isMouseOverRegles(mouse_x, mouse_y)) {
+                    menuState = MAIN_MENU;
+                }
+
+            }
+
+        }
     }
 }
+
+
 
 
 // Nettoyage et fermeture d'Allegro

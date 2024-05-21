@@ -26,11 +26,6 @@ int jauge_xR = 370;
 int jauge_xV = 570;
 int jauge_xO= 170;
 
-int scoretot = 0;
-
-int obtenir_score() {
-    return scoretot;
-}
 
 void dessinerclients(BITMAP *buffer, BITMAP *plat_rose, BITMAP *plat_vert, BITMAP *plat_jaune, bool *flag_rose, bool *flag_vert, bool *flag_jaune){
 
@@ -113,7 +108,10 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             usleep(1);
             temps_ecouleV = 0;
             *flag_vert = false;
-            if (cercle_vert_x >= 900) scoretot += 10;
+            if (cercle_vert_x >= 900) {
+                scorejoueur1 += 10;
+                scorejoueur2 += 10;
+            }
         }
 
         // cercle_vert_x = 0;
@@ -125,7 +123,8 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             temps_ecouleV = 0;
             *flag_vert = false;
         }
-        scoretot -= 5;
+        scorejoueur1 -= 5;
+        scorejoueur2 -= 5;
         cercle_vert_x = 0;
     }
 
@@ -136,7 +135,10 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             usleep(1);
             temps_ecouleR = 0;
             *flag_rose = false;
-            if (cercle_rose_x >= 900) scoretot += 10;
+            if (cercle_rose_x >= 900) {
+                scorejoueur1 += 10;
+                scorejoueur2 += 10;
+            }
         }
     }
     else if (temps_ecouleR >= 30000){
@@ -146,7 +148,8 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             temps_ecouleR = 0;
             *flag_rose = false;
         }
-        scoretot -= 5;
+        scorejoueur1 -= 5;
+        scorejoueur2 -= 5;
         cercle_rose_x = 0;
     }
 
@@ -157,7 +160,10 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             usleep(1);
             temps_ecouleO = 0;
             *flag_jaune = false;
-            if (cercle_orange_x >= 900) scoretot += 10;
+            if (cercle_orange_x >= 900) {
+                scorejoueur1 += 10;
+                scorejoueur2 += 10;
+            }
         }
     }
     else if (temps_ecouleO >= 30000){
@@ -167,7 +173,8 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
             temps_ecouleO = 0;
             *flag_jaune = false;
         }
-        scoretot -= 5;
+        scorejoueur1 -= 5;
+        scorejoueur2 -= 5;
         cercle_orange_x = 0;
     }
 
@@ -182,7 +189,7 @@ void revenirclients(bool *flag_vert, bool *flag_rose, bool *flag_jaune, int *del
 //boule rose
     if (cercle_rose_x > LARGEUR_ECRAN) {
         cercle_rose_x = -TAILLE_CERCLE; // Réinitialisation de la position x
-        cercle_rose_y = 150;
+        cercle_rose_y = 105;
         *delay_rose = rand() % 3000 + 1500;
     }
 

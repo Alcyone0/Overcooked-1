@@ -40,16 +40,18 @@ typedef enum {
     MAIN_MENU,
     LEVEL_MENU,
     GAME,
+    SETTINGS,
 } MenuState;
 
+typedef struct {
+    BITMAP *regles;
+    BITMAP *Bouton_return;
+    BITMAP *Bouton_return2;
+} MenuS;
 
-typedef enum {
-    NO_SUB_MENU,
-    SETTINGS_SUB_MENU
-} SubMenuState;
 
 extern MenuState menuState;
-extern SubMenuState subMenuState;
+
 
 
 // Chargement des images du menu
@@ -61,6 +63,7 @@ extern void loadMenulevel(Menulvl *lvl);
 extern void showMainMenu(BITMAP *buffer, Menu *menu);
 extern void showMenulevel(BITMAP *buffer, Menulvl *lvl);
 extern void handleMenuLogic();
+extern void showSettings( BITMAP* buffer, MenuS *set);
 // Nettoyage et fermeture d'Allegro
 void cleanup(Menu *menu, Menulvl *lvl);
 
