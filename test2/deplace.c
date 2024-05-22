@@ -48,6 +48,9 @@ bool isInsideZone(int x, int y, Zone zone) {
 }
 
 BITMAP *champi1, *tomate1, *assiette1, *pate1, *jambon1, *mozza1, *piZ1, *olive1, *plats2, *plats1, *plats3, *tomate2;
+BITMAP *plat1C = NULL;
+BITMAP *plat2C = NULL;
+BITMAP *plat3C = NULL;
 
 
 
@@ -275,6 +278,33 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
     Zone decoupeZone1 = {497, 536, 532, 569};
     Zone decoupeZone2 = {305, 345, 534, 569};
 
+    // Ajoutez cette section après avoir vérifié si le plat est ramassé
+    if (plat1Picked) {
+        if (plat1RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        } else if (plat1RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        }
+    }
+
+// Ajoutez des conditions similaires pour plat2 et plat3 si nécessaire
+    if (plat2Picked) {
+        if (plat2RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        } else if (plat2RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        }
+    }
+
+    if (plat3Picked) {
+        if (plat3RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        } else if (plat3RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        }
+    }
+
+
     static bool images_loaded = false;
     if (!images_loaded) {
         assiette1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\assiette.bmp", NULL);
@@ -289,7 +319,10 @@ void deplace(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
         tomate2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomat.bmp", NULL);
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3 || !tomate2) {
+        plat1C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1plat.bmp", NULL);
+        plat2C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2plat.bmp", NULL);
+        plat3C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3C.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 ||!plat1C || !plat2C || !plat3C|| !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !tomate2 || !plats3) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
@@ -576,10 +609,39 @@ void deplace2(BITMAP *buffer, Position playerPos, Position playerPos1) {
     Zone tableZone2 = {420, 458, 181, 249}; //table 2 pour desposé comandes
     Zone tableZone3 = {609, 648, 181, 216}; // table 3 pouor depose commandes
     Zone poubelZone = {420, 457, 565, 600}; //poubelle
-    /*Zone fourZone1 = {345, 392, 393, 427};
-    Zone fourZone2 = {460, 496, 393, 427};*/
+    Zone fourZone1 = {306, 342, 318, 349};
+    Zone fourZone2 = {381, 420, 316, 351};
     Zone decoupeZone1 = {571, 610, 354, 424};
     //Zone decoupeZone2 = {305, 345, 534, 569};
+
+    // Ajoutez les nouvelles images pour les plats modifiés
+
+
+    // Ajoutez cette section après avoir vérifié si le plat est ramassé
+    if (plat1Picked) {
+        if (plat1RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        } else if (plat1RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        }
+    }
+
+// Ajoutez des conditions similaires pour plat2 et plat3 si nécessaire
+    if (plat2Picked) {
+        if (plat2RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        } else if (plat2RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        }
+    }
+
+    if (plat3Picked) {
+        if (plat3RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        } else if (plat3RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        }
+    }
 
     static bool images_loaded = false;
     if (!images_loaded) {
@@ -595,7 +657,10 @@ void deplace2(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
         tomate2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomat.bmp", NULL);
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !tomate2 || !plats3) {
+        plat1C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1plat.bmp", NULL);
+        plat2C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2plat.bmp", NULL);
+        plat3C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3C.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 ||!plat1C || !plat2C || !plat3C|| !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !tomate2 || !plats3) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
@@ -882,8 +947,8 @@ void deplace3(BITMAP *buffer, Position playerPos, Position playerPos1) {
     Zone tableZone2 = {420, 458, 181, 249}; //table 2 pour desposé comandes
     Zone tableZone3 = {609, 648, 181, 216}; // table 3 pouor depose commandes
     Zone poubelZone = {495, 535, 318, 353}; //poubelle
-    /*Zone fourZone1 = {345, 392, 393, 427};
-    Zone fourZone2 = {460, 496, 393, 427};*/
+    Zone fourZone1 = {536, 573, 353, 389};
+    Zone fourZone2 = {536, 574, 422, 459};
     Zone decoupeZone1 = {571, 610, 354, 424};
     //Zone decoupeZone2 = {305, 345, 534, 569};
 
@@ -901,14 +966,46 @@ void deplace3(BITMAP *buffer, Position playerPos, Position playerPos1) {
         plats1 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1platsb.bmp", NULL);
         plats3 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\3plat.bmp", NULL);
         tomate2 = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\tomat.bmp", NULL);
-        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 || !tomate2 || !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !plats3) {
+        plat1C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\1plat.bmp", NULL);
+        plat2C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\2plat.bmp", NULL);
+        plat3C = load_bitmap("C:\\Users\\ACER\\Documents\\info\\overcook\\test2\\images\\plat3C.bmp", NULL);
+        if (!assiette1 || !pate1 || !jambon1 || !champi1 || !tomate1 ||!plat1C || !plat2C || !plat3C|| !piZ1 || !mozza1 || !olive1 || !plats2 || !plats1 || !tomate2 || !plats3) {
             allegro_message("Erreur lors du chargement de l'image.");
             exit(EXIT_FAILURE);
         }
 
+
         initIngredients();
         images_loaded = true;
     }
+
+    // Ajoutez cette section après avoir vérifié si le plat est ramassé
+    if (plat1Picked) {
+        if (plat1RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        } else if (plat1RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats1 = plat1C; // Change l'image du plat1 en plat1C
+        }
+    }
+
+// Ajoutez des conditions similaires pour plat2 et plat3 si nécessaire
+    if (plat2Picked) {
+        if (plat2RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        } else if (plat2RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats2 = plat2C; // Change l'image du plat2 en plat2C
+        }
+    }
+
+    if (plat3Picked) {
+        if (plat3RamassePar == 0 && (isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone1) || isInsideZone(playerPos.curseur_x, playerPos.curseur_Y, fourZone2)) && key[KEY_L]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        } else if (plat3RamassePar == 1 && (isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone1) || isInsideZone(playerPos1.curseur_x, playerPos1.curseur_Y, fourZone2)) && key[KEY_V]) {
+            plats3 = plat3C; // Change l'image du plat3 en plat3C
+        }
+    }
+
+
     /*resetIngredientsPIZZA1Position();
     resetIngredientsPIZZA2Position();
     resetIngredientsPIZZA3Position();*/
