@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 #include "plat.h"
 #include "clients.h"
 #include "saisir.h"
@@ -33,6 +34,94 @@ int pos_jaune ;
 int pos_vert ;
 
 char pseudo1[50], pseudo2[50];
+
+volatile int seconds_left = 0;
+
+void decrement_timer() {
+    if (seconds_left > 0) {
+        seconds_left--;
+    }
+}
+
+void draw_timer(int seconds_left, int x, int y, int rect_width, int rect_height) {
+    // Dessin du rectangle bleu marine
+    rectfill(screen, x, y, x + rect_width, y + rect_height, makecol(0, 0, 128));
+
+    int minutes = seconds_left / 60;
+    int seconds = seconds_left % 60;
+
+    char timer_text[6];
+    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+
+    textout_ex(screen, font, timer_text, x + 10, y + 10, makecol(255, 255, 255), -1);
+}
+
+void show_end_screen() {
+    BITMAP *fintemps = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\tempsfini.bmp", NULL);
+    if (!fintemps) {
+        set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+        allegro_message("Erreur : Impossible de charger le nouveau fond.");
+        return;
+    }
+
+    draw_sprite(screen, fintemps, 0, 0);
+
+    rest(2500);
+    //image fond pour affichage des pseudos
+    BITMAP *scoredefin = load_bitmap("C:\\Users\\estel\\Documents\\overcooked\\Design sans titre (1).bmp", NULL);
+    if (!scoredefin) {
+        set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+        allegro_message("Erreur : Impossible de charger le nouveau fond.");
+        return;
+    }
+
+    draw_sprite(screen, scoredefin, 0, 0);
+
+    // Afficher les pseudos sur le nouveau fond
+    textout_ex(screen, font, pseudo1, 274, 370, makecol(0, 0, 0), -1);
+    textout_ex(screen, font, pseudo2, 492, 370, makecol(0, 0, 0), -1);
+    // Affiche les scores des joueurs
+    //textout_ex(screen, font, scorejoueur1, 210, 400, makecol(255, 255, 255), -1);
+    //textout_ex(screen, font, scorejoueur2, 549, 400, makecol(255, 255, 255), -1);
+    //affiche le score totale de la partie
+    //textout_ex(screen, font, scoretot, 450, 550, makecol(255, 255, 255), -1);
+}
+
+void run_timer(int initial_minutes) {
+    allegro_init();
+    install_keyboard();
+    install_timer();
+    install_mouse();
+
+    set_color_depth(32);
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED, 800, 600, 0, 0);
+
+    clear_to_color(screen, makecol(0, 0, 0));
+
+    int rect_width = 100;
+    int rect_height = 25;
+    int x = 800 - rect_width;
+    int y = 0;
+
+    seconds_left = initial_minutes * 60;
+
+    install_int(decrement_timer, 1000);
+
+    while (!keypressed() && seconds_left > 0) {
+        draw_timer(seconds_left, x, y, rect_width, rect_height);
+
+        // Double buffering pour éviter le scintillement (utile ?)
+        acquire_screen();
+        release_screen();
+    }
+
+    if (seconds_left == 0) {
+        show_end_screen();
+    }
+
+    readkey();
+    allegro_exit();
+}
 
 
 int main() {
@@ -119,6 +208,8 @@ int main() {
     //chargerimage(&plat1, &plat2, &plat3);
     // Saisie des pseudos
     saisie_pseudos(pseudo1, pseudo2);
+    run_timer(1);
+
 
 
     // Boucle de jeu
